@@ -91,6 +91,14 @@ oidc:
   redirect_url: http://127.0.0.1:9000/apisix/admin/oidc/callback
   scope: openid
 
+ldap:
+  enabled: false
+  host: 10.252.9.65:389
+  base_dn: "cn=Test,ou=System_User,dc=eeo-inc,dc=com"
+  password: "Test99999"
+  search_dn: ""
+
+
 plugins:
   - real-ip                        # priority: 23000
   - ai                             # priority: 22900
