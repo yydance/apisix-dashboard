@@ -29,7 +29,7 @@ import (
 	"github.com/apisix/manager-api/test/e2e/base"
 )
 
-var nodes []map[string]interface{} = []map[string]interface{}{
+var nodes []map[string]any = []map[string]any{
 	{
 		"host":     base.UpstreamIp,
 		"port":     1980,
@@ -46,7 +46,7 @@ var nodes []map[string]interface{} = []map[string]interface{}{
 
 var _ = Describe("Upstream chash hash on custom header", func() {
 	It("create chash upstream with hash_on (custom_header)", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["key"] = "custom_header"
@@ -133,7 +133,7 @@ var _ = Describe("Upstream chash hash on custom header", func() {
 
 var _ = Describe("Upstream chash hash on cookie", func() {
 	It("create chash upstream with hash_on (cookie)", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["key"] = "custom_cookie"
@@ -244,7 +244,7 @@ var _ = Describe("Upstream chash hash on cookie", func() {
 
 var _ = Describe("Upstream key contains uppercase letters and hyphen", func() {
 	It("create chash upstream with key contains uppercase letters and hyphen", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["key"] = "X-Sessionid"
@@ -346,7 +346,7 @@ var _ = Describe("Upstream chash hash on consumer", func() {
 		})
 	})
 	It("create chash upstream with hash_on (consumer)", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["hash_on"] = "consumer"
@@ -444,7 +444,7 @@ var _ = Describe("Upstream chash hash on consumer", func() {
 
 var _ = Describe("Upstream chash hash on wrong key", func() {
 	It("verify upstream with wrong key", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["key"] = "not_support"
@@ -474,7 +474,7 @@ var _ = Describe("Upstream chash hash on wrong key", func() {
 
 var _ = Describe("Upstream chash hash on vars", func() {
 	It("create chash upstream hash_on (vars)", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["nodes"] = nodes
 		createUpstreamBody["type"] = "chash"
 		createUpstreamBody["hash_on"] = "vars"

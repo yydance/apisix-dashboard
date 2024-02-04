@@ -43,7 +43,7 @@ func TestUpstream_Get(t *testing.T) {
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "upstream: get success",
@@ -60,35 +60,35 @@ func TestUpstream_Get(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -108,35 +108,35 @@ func TestUpstream_Get(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -189,7 +189,7 @@ func TestUpstreams_List(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream1",
 				Key:  "server_addr",
-				Nodes: []map[string]interface{}{
+				Nodes: []map[string]any{
 					{
 						"host":   "39.97.63.215",
 						"port":   float64(80),
@@ -242,7 +242,7 @@ func TestUpstreams_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all upstream",
@@ -257,7 +257,7 @@ func TestUpstreams_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[0],
 					mockData[1],
 					mockData[2],
@@ -279,7 +279,7 @@ func TestUpstreams_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[0],
 				},
 				TotalSize: 1,
@@ -297,7 +297,7 @@ func TestUpstreams_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range mockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -329,12 +329,12 @@ func TestUpstream_Create(t *testing.T) {
 		caseDesc     string
 		getCalled    bool
 		giveInput    *entity.Upstream
-		giveRet      interface{}
+		giveRet      any
 		giveErr      error
 		wantInput    *entity.Upstream
 		wantErr      error
-		wantRet      interface{}
-		nameExistRet []interface{}
+		wantRet      any
+		nameExistRet []any
 	}{
 		{
 			caseDesc:  "create success",
@@ -350,35 +350,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -398,35 +398,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -446,35 +446,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -494,35 +494,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -616,35 +616,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -665,35 +665,35 @@ func TestUpstream_Create(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -744,11 +744,11 @@ func TestUpstream_Update(t *testing.T) {
 		getCalled    bool
 		giveInput    *UpdateInput
 		giveErr      error
-		giveRet      interface{}
+		giveRet      any
 		wantInput    *entity.Upstream
 		wantErr      error
-		wantRet      interface{}
-		nameExistRet []interface{}
+		wantRet      any
+		nameExistRet []any
 	}{
 		{
 			caseDesc:  "update success",
@@ -763,35 +763,35 @@ func TestUpstream_Update(t *testing.T) {
 							Send:    15,
 							Read:    15,
 						},
-						Checks: map[string]interface{}{
-							"active": map[string]interface{}{
+						Checks: map[string]any{
+							"active": map[string]any{
 								"timeout":   float64(5),
 								"http_path": "/status",
 								"host":      "foo.com",
-								"healthy": map[string]interface{}{
+								"healthy": map[string]any{
 									"interval":  2,
 									"successes": 1,
 								},
-								"unhealthy": map[string]interface{}{
+								"unhealthy": map[string]any{
 									"interval":      1,
 									"http_failures": 2,
 								},
-								"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+								"req_headers": []any{"User-Agent: curl/7.29.0"},
 							},
-							"passive": map[string]interface{}{
-								"healthy": map[string]interface{}{
-									"http_statuses": []interface{}{float64(200), float64(201)},
+							"passive": map[string]any{
+								"healthy": map[string]any{
+									"http_statuses": []any{float64(200), float64(201)},
 									"successes":     float64(3),
 								},
-								"unhealthy": map[string]interface{}{
-									"http_statuses": []interface{}{float64(500)},
+								"unhealthy": map[string]any{
+									"http_statuses": []any{float64(500)},
 									"http_failures": 3,
 									"tcp_failures":  3,
 								},
 							},
 						},
 						Key: "server_addr",
-						Nodes: []map[string]interface{}{
+						Nodes: []map[string]any{
 							{
 								"host":   "39.97.63.215",
 								"port":   float64(80),
@@ -812,35 +812,35 @@ func TestUpstream_Update(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": 3,
 								"tcp_failures":  3,
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -860,35 +860,35 @@ func TestUpstream_Update(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": 3,
 								"tcp_failures":  3,
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -908,35 +908,35 @@ func TestUpstream_Update(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": 3,
 								"tcp_failures":  3,
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []map[string]interface{}{
+					Nodes: []map[string]any{
 						{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
@@ -961,35 +961,35 @@ func TestUpstream_Update(t *testing.T) {
 							Send:    15,
 							Read:    15,
 						},
-						Checks: map[string]interface{}{
-							"active": map[string]interface{}{
+						Checks: map[string]any{
+							"active": map[string]any{
 								"timeout":   float64(5),
 								"http_path": "/status",
 								"host":      "foo.com",
-								"healthy": map[string]interface{}{
+								"healthy": map[string]any{
 									"interval":  2,
 									"successes": 1,
 								},
-								"unhealthy": map[string]interface{}{
+								"unhealthy": map[string]any{
 									"interval":      1,
 									"http_failures": 2,
 								},
-								"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+								"req_headers": []any{"User-Agent: curl/7.29.0"},
 							},
-							"passive": map[string]interface{}{
-								"healthy": map[string]interface{}{
-									"http_statuses": []interface{}{float64(200), float64(201)},
+							"passive": map[string]any{
+								"healthy": map[string]any{
+									"http_statuses": []any{float64(200), float64(201)},
 									"successes":     float64(3),
 								},
-								"unhealthy": map[string]interface{}{
-									"http_statuses": []interface{}{float64(500)},
+								"unhealthy": map[string]any{
+									"http_statuses": []any{float64(500)},
 									"http_failures": 3,
 									"tcp_failures":  3,
 								},
 							},
 						},
 						Key: "server_addr",
-						Nodes: []map[string]interface{}{
+						Nodes: []map[string]any{
 							{
 								"host":   "39.97.63.215",
 								"port":   float64(80),
@@ -1047,36 +1047,36 @@ func TestUpstream_Patch(t *testing.T) {
 				Send:    15,
 				Read:    15,
 			},
-			Checks: map[string]interface{}{
-				"active": map[string]interface{}{
+			Checks: map[string]any{
+				"active": map[string]any{
 					"timeout":   float64(5),
 					"http_path": "/status",
 					"host":      "foo.com",
-					"healthy": map[string]interface{}{
+					"healthy": map[string]any{
 						"interval":  float64(2),
 						"successes": float64(1),
 					},
-					"unhealthy": map[string]interface{}{
+					"unhealthy": map[string]any{
 						"interval":      float64(1),
 						"http_failures": float64(2),
 					},
-					"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+					"req_headers": []any{"User-Agent: curl/7.29.0"},
 				},
-				"passive": map[string]interface{}{
-					"healthy": map[string]interface{}{
-						"http_statuses": []interface{}{float64(200), float64(201)},
+				"passive": map[string]any{
+					"healthy": map[string]any{
+						"http_statuses": []any{float64(200), float64(201)},
 						"successes":     float64(3),
 					},
-					"unhealthy": map[string]interface{}{
-						"http_statuses": []interface{}{float64(500)},
+					"unhealthy": map[string]any{
+						"http_statuses": []any{float64(500)},
 						"http_failures": 3,
 						"tcp_failures":  3,
 					},
 				},
 			},
 			Key: "server_addr",
-			Nodes: []interface{}{
-				map[string]interface{}{
+			Nodes: []any{
+				map[string]any{
 					"host":   "39.97.63.215",
 					"port":   float64(80),
 					"weight": float64(1),
@@ -1096,36 +1096,36 @@ func TestUpstream_Patch(t *testing.T) {
 				Send:    20,
 				Read:    20,
 			},
-			Checks: map[string]interface{}{
-				"active": map[string]interface{}{
+			Checks: map[string]any{
+				"active": map[string]any{
 					"timeout":   float64(5),
 					"http_path": "/status",
 					"host":      "foo.com",
-					"healthy": map[string]interface{}{
+					"healthy": map[string]any{
 						"interval":  float64(2),
 						"successes": float64(1),
 					},
-					"unhealthy": map[string]interface{}{
+					"unhealthy": map[string]any{
 						"interval":      float64(1),
 						"http_failures": float64(2),
 					},
-					"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+					"req_headers": []any{"User-Agent: curl/7.29.0"},
 				},
-				"passive": map[string]interface{}{
-					"healthy": map[string]interface{}{
-						"http_statuses": []interface{}{float64(200), float64(201)},
+				"passive": map[string]any{
+					"healthy": map[string]any{
+						"http_statuses": []any{float64(200), float64(201)},
 						"successes":     float64(3),
 					},
-					"unhealthy": map[string]interface{}{
-						"http_statuses": []interface{}{float64(500)},
+					"unhealthy": map[string]any{
+						"http_statuses": []any{float64(500)},
 						"http_failures": 3,
 						"tcp_failures":  3,
 					},
 				},
 			},
 			Key: "server_addr2",
-			Nodes: []interface{}{
-				map[string]interface{}{
+			Nodes: []any{
+				map[string]any{
 					"host":   "39.97.63.215",
 					"port":   float64(80),
 					"weight": float64(1),
@@ -1141,10 +1141,10 @@ func TestUpstream_Patch(t *testing.T) {
 		getCalled bool
 		giveInput *PatchInput
 		giveErr   error
-		giveRet   interface{}
+		giveRet   any
 		wantInput *entity.Upstream
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "patch success",
@@ -1159,36 +1159,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    20,
 						Read:    20,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  float64(2),
 								"successes": float64(1),
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      float64(1),
 								"http_failures": float64(2),
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr2",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
 							"weight": float64(1),
@@ -1212,36 +1212,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    20,
 						Read:    20,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  float64(2),
 								"successes": float64(1),
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      float64(1),
 								"http_failures": float64(2),
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr2",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
 							"weight": float64(1),
@@ -1260,36 +1260,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    20,
 						Read:    20,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  float64(2),
 								"successes": float64(1),
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      float64(1),
 								"http_failures": float64(2),
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr2",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "39.97.63.215",
 							"port":   float64(80),
 							"weight": float64(1),
@@ -1317,36 +1317,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    20,
 						Read:    20,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr_patch",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "172.16.238.20",
 							"port":   float64(1981),
 							"weight": float64(1),
@@ -1365,36 +1365,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    15,
 						Read:    15,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  float64(2),
 								"successes": float64(1),
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      float64(1),
 								"http_failures": float64(2),
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "172.16.238.20",
 							"port":   float64(1981),
 							"weight": float64(1),
@@ -1413,36 +1413,36 @@ func TestUpstream_Patch(t *testing.T) {
 						Send:    20,
 						Read:    20,
 					},
-					Checks: map[string]interface{}{
-						"active": map[string]interface{}{
+					Checks: map[string]any{
+						"active": map[string]any{
 							"timeout":   float64(5),
 							"http_path": "/status",
 							"host":      "foo.com",
-							"healthy": map[string]interface{}{
+							"healthy": map[string]any{
 								"interval":  2,
 								"successes": 1,
 							},
-							"unhealthy": map[string]interface{}{
+							"unhealthy": map[string]any{
 								"interval":      1,
 								"http_failures": 2,
 							},
-							"req_headers": []interface{}{"User-Agent: curl/7.29.0"},
+							"req_headers": []any{"User-Agent: curl/7.29.0"},
 						},
-						"passive": map[string]interface{}{
-							"healthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(200), float64(201)},
+						"passive": map[string]any{
+							"healthy": map[string]any{
+								"http_statuses": []any{float64(200), float64(201)},
 								"successes":     float64(3),
 							},
-							"unhealthy": map[string]interface{}{
-								"http_statuses": []interface{}{float64(500)},
+							"unhealthy": map[string]any{
+								"http_statuses": []any{float64(500)},
 								"http_failures": float64(3),
 								"tcp_failures":  float64(3),
 							},
 						},
 					},
 					Key: "server_addr_patch",
-					Nodes: []interface{}{
-						map[string]interface{}{
+					Nodes: []any{
+						map[string]any{
 							"host":   "172.16.238.20",
 							"port":   float64(1981),
 							"weight": float64(1),
@@ -1500,7 +1500,7 @@ func TestUpstreams_Delete(t *testing.T) {
 		giveErr             error
 		wantInput           []string
 		wantErr             error
-		wantRet             interface{}
+		wantRet             any
 		routeMockData       []*entity.Route
 		routeMockErr        error
 		serviceMockData     []*entity.Service
@@ -1620,7 +1620,7 @@ func TestUpstreams_Delete(t *testing.T) {
 
 			routeStore := &store.MockInterface{}
 			routeStore.On("List", mock.Anything).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.routeMockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -1640,7 +1640,7 @@ func TestUpstreams_Delete(t *testing.T) {
 
 			serviceStore := &store.MockInterface{}
 			serviceStore.On("List", mock.Anything).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.serviceMockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -1660,7 +1660,7 @@ func TestUpstreams_Delete(t *testing.T) {
 
 			streamRouteStore := &store.MockInterface{}
 			streamRouteStore.On("List", mock.Anything).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.streamRouteMockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -1696,8 +1696,8 @@ func TestUpstream_Exist(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream1",
 				Key:  "server_addr",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.215",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1710,8 +1710,8 @@ func TestUpstream_Exist(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream2",
 				Key:  "server_addr2",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.216",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1724,8 +1724,8 @@ func TestUpstream_Exist(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream3",
 				Key:  "server_addr3",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.217",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1742,7 +1742,7 @@ func TestUpstream_Exist(t *testing.T) {
 		getCalled bool
 		wantInput []string
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "check upstream exist, excluded",
@@ -1782,7 +1782,7 @@ func TestUpstream_Exist(t *testing.T) {
 			upstreamStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range mockData {
 					if input.Predicate(c) {
 						if input.Format != nil {
@@ -1816,8 +1816,8 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream1",
 				Key:  "server_addr",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.215",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1830,8 +1830,8 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream2",
 				Key:  "server_addr2",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.216",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1844,8 +1844,8 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 			UpstreamDef: entity.UpstreamDef{
 				Name: "upstream3",
 				Key:  "server_addr3",
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.217",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1867,7 +1867,7 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 		{
 			caseDesc: "get upstream list names",
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.UpstreamNameResponse{
 						ID:   "001",
 						Name: "upstream1",
@@ -1894,7 +1894,7 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 			upstreamStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range mockData {
 					res = append(res, c)
 				}
@@ -1927,7 +1927,7 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 		{
 			caseDesc: "get upstream list names nil",
 			wantRet: &store.ListOutput{
-				Rows:      []interface{}{},
+				Rows:      []any{},
 				TotalSize: 0,
 			},
 			getCalled: true,
@@ -1941,7 +1941,7 @@ func TestUpstream_ListUpstreamNames(t *testing.T) {
 			upstreamStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range mocknilData {
 					res = append(res, c)
 				}

@@ -37,8 +37,8 @@ type DataSets struct {
 // Loader provide data loader abstraction
 type Loader interface {
 	// Import accepts data and converts it into entity data sets
-	Import(input interface{}) (*DataSets, error)
+	Import(input any) (*DataSets, error)
 
 	// Export accepts entity data sets and converts it into a specific format
-	Export(data DataSets) (interface{}, error)
+	Export(data DataSets) (any, error)
 }

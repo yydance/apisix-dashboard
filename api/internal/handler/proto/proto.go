@@ -82,7 +82,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.protoStore.Get(c.Context(), input.ID)
@@ -98,11 +98,11 @@ type ListInput struct {
 	store.Pagination
 }
 
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.protoStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.Desc != "" {
 				return strings.Contains(obj.(*entity.Proto).Desc, input.Desc)
 			}
@@ -118,7 +118,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	return ret, nil
 }
 
-func (h *Handler) Create(c droplet.Context) (interface{}, error) {
+func (h *Handler) Create(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.Proto)
 
 	// check proto id exist
@@ -147,7 +147,7 @@ type UpdateInput struct {
 	entity.Proto
 }
 
-func (h *Handler) Update(c droplet.Context) (interface{}, error) {
+func (h *Handler) Update(c droplet.Context) (any, error) {
 	input := c.Input().(*UpdateInput)
 
 	// check if ID in body is equal ID in path
@@ -173,7 +173,7 @@ type PatchInput struct {
 	Body    []byte `auto_read:"@body"`
 }
 
-func (h *Handler) Patch(c droplet.Context) (interface{}, error) {
+func (h *Handler) Patch(c droplet.Context) (any, error) {
 	input := c.Input().(*PatchInput)
 	reqBody := input.Body
 	id := input.ID
@@ -207,7 +207,7 @@ type BatchDeleteInput struct {
 	IDs string `auto_read:"ids,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDeleteInput)
 
 	ids := strings.Split(input.IDs, ",")
@@ -230,11 +230,11 @@ func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
 
 func (h *Handler) checkProtoUsed(ctx context.Context, storeInterface store.Interface, key string) error {
 	ret, err := storeInterface.List(ctx, store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			record := obj.(entity.GetPlugins)
 			for _, plugin := range plugins {
 				if _, ok := record.GetPlugins()[plugin]; ok {
-					configs := record.GetPlugins()[plugin].(map[string]interface{})
+					configs := record.GetPlugins()[plugin].(map[string]any)
 					protoId := utils.InterfaceToString(configs["proto_id"])
 					if protoId == key {
 						return true
@@ -243,7 +243,7 @@ func (h *Handler) checkProtoUsed(ctx context.Context, storeInterface store.Inter
 			}
 			return false
 		},
-		Format: func(obj interface{}) interface{} {
+		Format: func(obj any) any {
 			return obj.(entity.GetPlugins)
 		},
 		PageSize:   0,

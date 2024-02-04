@@ -44,9 +44,9 @@ var _ = Describe("Upstream", func() {
 		})
 	})
 	It("create upstream success", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["name"] = "upstream1"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -66,9 +66,9 @@ var _ = Describe("Upstream", func() {
 		})
 	})
 	It("create upstream2 success", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["name"] = "upstream2"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -89,7 +89,7 @@ var _ = Describe("Upstream", func() {
 	})
 	It("create upstream3 success when pass host is 'node' and nodes without port", func() {
 		By("create upstream3", func() {
-			createUpstreamBody := make(map[string]interface{})
+			createUpstreamBody := make(map[string]any)
 			createUpstreamBody["name"] = "upstream3"
 			createUpstreamBody["nodes"] = map[string]float64{base.UpstreamIp: 100}
 			createUpstreamBody["type"] = "roundrobin"
@@ -145,9 +145,9 @@ var _ = Describe("Upstream", func() {
 		})
 	})
 	It("create upstream failed, name existed", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["name"] = "upstream2"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -169,9 +169,9 @@ var _ = Describe("Upstream", func() {
 		})
 	})
 	It("update upstream failed, name existed", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["name"] = "upstream1"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -192,9 +192,9 @@ var _ = Describe("Upstream", func() {
 		})
 	})
 	It("update upstream success", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["name"] = "upstream22"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -421,8 +421,8 @@ var _ = DescribeTable("Upstream update with domain",
 
 var _ = Describe("Upstream chash remote addr", func() {
 	It("create chash upstream with key (remote_addr)", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -494,8 +494,8 @@ var _ = Describe("Upstream chash remote addr", func() {
 	})
 
 	It("create chash upstream with key (remote_addr, weight equal 0 or 1)", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -561,8 +561,8 @@ var _ = Describe("Upstream chash remote addr", func() {
 		Expect(count).Should(Equal(18))
 	})
 	It("create chash upstream with key (remote_addr, all weight equal 0)", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -689,9 +689,9 @@ var _ = Describe("Upstream chash remote addr", func() {
 
 var _ = Describe("Upstream create via post", func() {
 	It("create upstream via POST", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["id"] = "u1"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1981,
@@ -769,9 +769,9 @@ var _ = Describe("Upstream create via post", func() {
 
 var _ = Describe("Upstream update use patch method", func() {
 	It("create upstream via POST", func() {
-		createUpstreamBody := make(map[string]interface{})
+		createUpstreamBody := make(map[string]any)
 		createUpstreamBody["id"] = "u1"
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1981,
@@ -793,8 +793,8 @@ var _ = Describe("Upstream update use patch method", func() {
 		})
 	})
 	It("update upstream use patch method", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":     base.UpstreamIp,
 				"port":     1981,
@@ -825,7 +825,7 @@ var _ = Describe("Upstream update use patch method", func() {
 		})
 	})
 	It("Upstream update use patch method", func() {
-		var nodes []map[string]interface{} = []map[string]interface{}{
+		var nodes []map[string]any = []map[string]any{
 			{
 				"host":     base.UpstreamIp,
 				"port":     1980,

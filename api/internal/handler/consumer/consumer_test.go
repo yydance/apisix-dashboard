@@ -36,11 +36,11 @@ func TestHandler_Get(t *testing.T) {
 	tests := []struct {
 		caseDesc   string
 		giveInput  *GetInput
-		giveRet    interface{}
+		giveRet    any
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "normal",
@@ -89,7 +89,7 @@ func TestHandler_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all condition",
@@ -111,7 +111,7 @@ func TestHandler_List(t *testing.T) {
 				{Username: "testUser-is-me"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Consumer{Username: "iam-testUser"},
 					&entity.Consumer{Username: "testUser"},
 					&entity.Consumer{Username: "testUser-is-me"},
@@ -148,7 +148,7 @@ func TestHandler_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.giveData {
 					if input.Predicate(c) {
 						returnData = append(returnData, c)
@@ -177,10 +177,10 @@ func TestHandler_Create(t *testing.T) {
 		giveInput  *SetInput
 		giveCtx    context.Context
 		giveErr    error
-		giveRet    interface{}
+		giveRet    any
 		wantErr    error
 		wantInput  *SetInput
-		wantRet    interface{}
+		wantRet    any
 		wantCalled bool
 	}{
 		{
@@ -188,16 +188,16 @@ func TestHandler_Create(t *testing.T) {
 			giveInput: &SetInput{
 				Consumer: entity.Consumer{
 					Username: "name",
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{},
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{},
 					},
 				},
 			},
 			giveCtx: context.WithValue(context.Background(), "test", "value"),
 			giveRet: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 86400,
 					},
 				},
@@ -205,8 +205,8 @@ func TestHandler_Create(t *testing.T) {
 			wantInput: &SetInput{
 				Consumer: entity.Consumer{
 					Username: "name",
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{
 							"exp": 86400,
 						},
 					},
@@ -214,8 +214,8 @@ func TestHandler_Create(t *testing.T) {
 			},
 			wantRet: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 86400,
 					},
 				},
@@ -227,8 +227,8 @@ func TestHandler_Create(t *testing.T) {
 			giveInput: &SetInput{
 				Consumer: entity.Consumer{
 					Username: "name",
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{
 							"exp": 5000,
 						},
 					},
@@ -241,8 +241,8 @@ func TestHandler_Create(t *testing.T) {
 			wantInput: &SetInput{
 				Consumer: entity.Consumer{
 					Username: "name",
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{
 							"exp": 5000,
 						},
 					},
@@ -286,21 +286,21 @@ func TestHandler_Update(t *testing.T) {
 		caseDesc   string
 		giveInput  *SetInput
 		giveCtx    context.Context
-		giveRet    interface{}
+		giveRet    any
 		giveErr    error
 		wantErr    error
 		wantInput  *entity.Consumer
-		wantRet    interface{}
+		wantRet    any
 		wantCalled bool
-		getRet     interface{}
+		getRet     any
 	}{
 		{
 			caseDesc: "normal",
 			giveInput: &SetInput{
 				Username: "name",
 				Consumer: entity.Consumer{
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{
 							"exp": 500,
 						},
 					},
@@ -309,8 +309,8 @@ func TestHandler_Update(t *testing.T) {
 			giveCtx: context.WithValue(context.Background(), "test", "value"),
 			giveRet: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 500,
 					},
 				},
@@ -318,16 +318,16 @@ func TestHandler_Update(t *testing.T) {
 			},
 			wantInput: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 500,
 					},
 				},
 			},
 			wantRet: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 500,
 					},
 				},
@@ -345,8 +345,8 @@ func TestHandler_Update(t *testing.T) {
 			giveInput: &SetInput{
 				Username: "name",
 				Consumer: entity.Consumer{
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{},
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{},
 					},
 				},
 			},
@@ -356,8 +356,8 @@ func TestHandler_Update(t *testing.T) {
 			giveErr: fmt.Errorf("create failed"),
 			wantInput: &entity.Consumer{
 				Username: "name",
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{
 						"exp": 86400,
 					},
 				},
@@ -407,7 +407,7 @@ func TestHandler_BatchDelete(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput []string
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "normal",

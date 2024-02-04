@@ -88,7 +88,7 @@ type PatchInput struct {
 	Body    []byte `auto_read:"@body"`
 }
 
-func (h *Handler) Patch(c droplet.Context) (interface{}, error) {
+func (h *Handler) Patch(c droplet.Context) (any, error) {
 	input := c.Input().(*PatchInput)
 	reqBody := input.Body
 	ID := input.ID
@@ -130,43 +130,45 @@ type GetInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
-// - name: name
-//   in: query
-//   description: name of route
-//   required: false
-//   type: string
-// - name: uri
-//   in: query
-//   description: uri of route
-//   required: false
-//   type: string
-// - name: label
-//   in: query
-//   description: label of route
-//   required: false
-//   type: string
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//   - name: name
+//     in: query
+//     description: name of route
+//     required: false
+//     type: string
+//   - name: uri
+//     in: query
+//     description: uri of route
+//     required: false
+//     type: string
+//   - name: label
+//     in: query
+//     description: label of route
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/route"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/route"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.routeStore.Get(c.Context(), input.ID)
@@ -194,9 +196,9 @@ type ListInput struct {
 	URI    string `auto_read:"uri,query"`
 	Label  string `auto_read:"label,query"`
 	Status string `auto_read:"status,query"`
-	Host string `auto_read:"host,query"`
-	ID string `auto_read:"id,query"`
-	Desc string `auto_read:"desc,query"`
+	Host   string `auto_read:"host,query"`
+	ID     string `auto_read:"id,query"`
+	Desc   string `auto_read:"desc,query"`
 	store.Pagination
 }
 
@@ -213,7 +215,7 @@ func uriContains(obj *entity.Route, uri string) bool {
 	return false
 }
 
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 	labelMap, err := utils.GenLabelMap(input.Label)
 	if err != nil {
@@ -222,7 +224,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	}
 
 	ret, err := h.routeStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.Name != "" && !strings.Contains(obj.(*entity.Route).Name, input.Name) {
 				return false
 			}
@@ -255,7 +257,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 
 			return true
 		},
-		Format: func(obj interface{}) interface{} {
+		Format: func(obj any) any {
 			route := obj.(*entity.Route)
 			if route.Upstream != nil && route.Upstream.Nodes != nil {
 				route.Upstream.Nodes = entity.NodesFormat(route.Upstream.Nodes)
@@ -285,7 +287,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	return ret, nil
 }
 
-func generateLuaCode(script map[string]interface{}) (string, error) {
+func generateLuaCode(script map[string]any) (string, error) {
 	scriptString, err := json.Marshal(script)
 	if err != nil {
 		return "", err
@@ -322,7 +324,7 @@ func generateLuaCode(script map[string]interface{}) (string, error) {
 	return code.String(), nil
 }
 
-func (h *Handler) Create(c droplet.Context) (interface{}, error) {
+func (h *Handler) Create(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.Route)
 	//check depend
 	if input.ServiceID != nil {
@@ -365,7 +367,7 @@ func (h *Handler) Create(c droplet.Context) (interface{}, error) {
 		var err error
 		// Explicitly to lua if input script is of the map type, otherwise
 		// it will always represent a piece of lua code of the string type.
-		if scriptConf, ok := input.Script.(map[string]interface{}); ok {
+		if scriptConf, ok := input.Script.(map[string]any); ok {
 			// For lua code of map type, syntax validation is done by
 			// the generateLuaCode function
 			input.Script, err = generateLuaCode(scriptConf)
@@ -416,7 +418,7 @@ type UpdateInput struct {
 	entity.Route
 }
 
-func (h *Handler) Update(c droplet.Context) (interface{}, error) {
+func (h *Handler) Update(c droplet.Context) (any, error) {
 	input := c.Input().(*UpdateInput)
 
 	// check if ID in body is equal ID in path
@@ -467,7 +469,7 @@ func (h *Handler) Update(c droplet.Context) (interface{}, error) {
 		var err error
 		// Explicitly to lua if input script is of the map type, otherwise
 		// it will always represent a piece of lua code of the string type.
-		if scriptConf, ok := input.Script.(map[string]interface{}); ok {
+		if scriptConf, ok := input.Script.(map[string]any); ok {
 			// For lua code of map type, syntax validation is done by
 			// the generateLuaCode function
 			input.Route.Script, err = generateLuaCode(scriptConf)
@@ -532,7 +534,7 @@ type BatchDelete struct {
 	IDs string `auto_read:"ids,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDelete)
 
 	//delete route
@@ -565,32 +567,34 @@ type ExistCheckInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: name
-//   in: query
-//   description: name of route
-//   required: false
-//   type: string
-// - name: exclude
-//   in: query
-//   description: id of route that exclude checking
-//   required: false
-//   type: string
+//   - name: name
+//     in: query
+//     description: name of route
+//     required: false
+//     type: string
+//   - name: exclude
+//     in: query
+//     description: id of route that exclude checking
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: route not exists
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) Exist(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: route not exists
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) Exist(c droplet.Context) (any, error) {
 	input := c.Input().(*ExistCheckInput)
 	name := input.Name
 	exclude := input.Exclude
 
 	ret, err := h.routeStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			r := obj.(*entity.Route)
 			if r.Name == name && r.ID != exclude {
 				return true

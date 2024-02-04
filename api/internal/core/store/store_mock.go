@@ -32,7 +32,7 @@ func (m *MockInterface) Type() HubKey {
 	return m.HubKey
 }
 
-func (m *MockInterface) Get(_ context.Context, key string) (interface{}, error) {
+func (m *MockInterface) Get(_ context.Context, key string) (any, error) {
 	ret := m.Mock.Called(key)
 	return ret.Get(0), ret.Error(1)
 }
@@ -64,12 +64,12 @@ func (m *MockInterface) List(_ context.Context, input ListInput) (*ListOutput, e
 	return r0, r1
 }
 
-func (m *MockInterface) Create(ctx context.Context, obj interface{}) (interface{}, error) {
+func (m *MockInterface) Create(ctx context.Context, obj any) (any, error) {
 	ret := m.Mock.Called(ctx, obj)
 	return ret.Get(0), ret.Error(1)
 }
 
-func (m *MockInterface) Update(ctx context.Context, obj interface{}, createOnFail bool) (interface{}, error) {
+func (m *MockInterface) Update(ctx context.Context, obj any, createOnFail bool) (any, error) {
 	ret := m.Mock.Called(ctx, obj, createOnFail)
 	return ret.Get(0), ret.Error(1)
 }

@@ -44,7 +44,7 @@ var _ = Describe("Proto", func() {
 			f()
 		},
 		Entry("create proto success", func() {
-			createProtoBody := make(map[string]interface{})
+			createProtoBody := make(map[string]any)
 			createProtoBody["id"] = 1
 			createProtoBody["desc"] = "test_proto1"
 			createProtoBody["content"] = correctProtobuf
@@ -62,7 +62,7 @@ var _ = Describe("Proto", func() {
 			})
 		}),
 		Entry("create proto failed, id existed", func() {
-			createProtoBody := make(map[string]interface{})
+			createProtoBody := make(map[string]any)
 			createProtoBody["id"] = 1
 			createProtoBody["desc"] = "test_proto1"
 			createProtoBody["content"] = correctProtobuf
@@ -81,7 +81,7 @@ var _ = Describe("Proto", func() {
 			})
 		}),
 		Entry("update proto success", func() {
-			updateProtoBody := make(map[string]interface{})
+			updateProtoBody := make(map[string]any)
 			updateProtoBody["id"] = 1
 			updateProtoBody["desc"] = "test_proto1_modify"
 			updateProtoBody["content"] = correctProtobuf
@@ -144,7 +144,7 @@ var _ = Describe("Proto", func() {
 			f()
 		},
 		Entry("create proto success", func() {
-			createProtoBody := make(map[string]interface{})
+			createProtoBody := make(map[string]any)
 			createProtoBody["id"] = 1
 			createProtoBody["desc"] = "test_proto1"
 			createProtoBody["content"] = correctProtobuf
@@ -162,13 +162,13 @@ var _ = Describe("Proto", func() {
 			})
 		}),
 		Entry("create route with grpc-transcode", func() {
-			createRouteBody := make(map[string]interface{})
+			createRouteBody := make(map[string]any)
 			createRouteBody["id"] = 1
 			createRouteBody["name"] = "test_route"
 			createRouteBody["uri"] = "/grpc_test"
 			createRouteBody["methods"] = []string{"GET", "POST"}
-			createRouteBody["upstream"] = map[string]interface{}{
-				"nodes": []map[string]interface{}{
+			createRouteBody["upstream"] = map[string]any{
+				"nodes": []map[string]any{
 					{
 						"host":   base.UpstreamGrpcIp,
 						"port":   50051,
@@ -178,8 +178,8 @@ var _ = Describe("Proto", func() {
 				"type":   "roundrobin",
 				"scheme": "grpc",
 			}
-			createRouteBody["plugins"] = map[string]interface{}{
-				"grpc-transcode": map[string]interface{}{
+			createRouteBody["plugins"] = map[string]any{
+				"grpc-transcode": map[string]any{
 					"method":   "SayHello",
 					"proto_id": "1",
 					"service":  "helloworld.Greeter",

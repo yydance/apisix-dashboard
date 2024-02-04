@@ -108,33 +108,35 @@ func subsetOf(reqLabels map[string]struct{}, labels map[string]string) map[strin
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
-// - name: label
-//   in: query
-//   description: label filter of labels
-//   required: false
-//   type: string
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//   - name: label
+//     in: query
+//     description: label filter of labels
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/service"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/service"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	typ := input.Type
@@ -144,7 +146,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 			fmt.Errorf("%s: \"%s\"", err.Error(), input.Label)
 	}
 
-	var items []interface{}
+	var items []any
 	switch typ {
 	case "route":
 		items = append(items, h.routeStore)
@@ -163,7 +165,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 			h.sslStore, h.consumerStore, h.pluginConfigStore)
 	}
 
-	predicate := func(obj interface{}) bool {
+	predicate := func(obj any) bool {
 		var ls map[string]string
 
 		switch obj := obj.(type) {
@@ -186,7 +188,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 		return utils.LabelContains(ls, reqLabels)
 	}
 
-	format := func(obj interface{}) interface{} {
+	format := func(obj any) any {
 		val := reflect.ValueOf(obj).Elem()
 		l := val.FieldByName("Labels")
 		if l.IsNil() {
@@ -207,7 +209,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 				// Sort it later.
 				PageSize:   0,
 				PageNumber: 0,
-				Less: func(i, j interface{}) bool {
+				Less: func(i, j any) bool {
 					return true
 				},
 			},
@@ -253,7 +255,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	if input.PageSize > 0 && input.PageNumber > 0 {
 		skipCount := (input.PageNumber - 1) * input.PageSize
 		if skipCount > totalRet.TotalSize {
-			totalRet.Rows = []interface{}{}
+			totalRet.Rows = []any{}
 			return totalRet, nil
 		}
 

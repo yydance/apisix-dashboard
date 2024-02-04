@@ -28,11 +28,11 @@ import (
 )
 
 var _ = Describe("create service without plugin", func() {
-	var createServiceBody map[string]interface{} = map[string]interface{}{
+	var createServiceBody map[string]any = map[string]any{
 		"name": "testservice",
-		"upstream": map[string]interface{}{
+		"upstream": map[string]any{
 			"type": "roundrobin",
-			"nodes": []map[string]interface{}{
+			"nodes": []map[string]any{
 				{
 					"host":   base.UpstreamIp,
 					"port":   1980,
@@ -183,10 +183,10 @@ var _ = Describe("create service without plugin", func() {
 
 var _ = Describe("create service with plugin", func() {
 	It("create service without plugin", func() {
-		var createServiceBody map[string]interface{} = map[string]interface{}{
+		var createServiceBody map[string]any = map[string]any{
 			"name": "testservice",
-			"plugins": map[string]interface{}{
-				"limit-count": map[string]interface{}{
+			"plugins": map[string]any{
+				"limit-count": map[string]any{
 					"count":         100,
 					"time_window":   60,
 					"rejected_code": 503,
@@ -194,9 +194,9 @@ var _ = Describe("create service with plugin", func() {
 					"policy":        "local",
 				},
 			},
-			"upstream": map[string]interface{}{
+			"upstream": map[string]any{
 				"type": "roundrobin",
-				"nodes": []map[string]interface{}{
+				"nodes": []map[string]any{
 					{
 						"host":   base.UpstreamIp,
 						"port":   1980,
@@ -289,18 +289,18 @@ var _ = Describe("create service with plugin", func() {
 
 var _ = Describe("create service with all options via POST method", func() {
 	It("create service with all options via POST method", func() {
-		var createServiceBody map[string]interface{} = map[string]interface{}{
+		var createServiceBody map[string]any = map[string]any{
 			"id":   "s2",
 			"name": "testservice22",
 			"desc": "testservice_desc",
-			"labels": map[string]interface{}{
+			"labels": map[string]any{
 				"build":   "16",
 				"env":     "production",
 				"version": "v2",
 			},
 			"enable_websocket": true,
-			"plugins": map[string]interface{}{
-				"limit-count": map[string]interface{}{
+			"plugins": map[string]any{
+				"limit-count": map[string]any{
 					"count":         100,
 					"time_window":   60,
 					"rejected_code": 503,
@@ -308,11 +308,11 @@ var _ = Describe("create service with all options via POST method", func() {
 					"policy":        "local",
 				},
 			},
-			"upstream": map[string]interface{}{
+			"upstream": map[string]any{
 				"type":        "roundrobin",
 				"create_time": 1602883670,
 				"update_time": 1602893670,
-				"nodes": []map[string]interface{}{
+				"nodes": []map[string]any{
 					{
 						"host":   base.UpstreamIp,
 						"port":   1980,
@@ -403,11 +403,11 @@ var _ = Describe("create service with all options via POST method", func() {
 
 var _ = Describe("service update use patch method", func() {
 	It("create service without plugin", func() {
-		var createServiceBody map[string]interface{} = map[string]interface{}{
+		var createServiceBody map[string]any = map[string]any{
 			"name": "testservice",
-			"upstream": map[string]interface{}{
+			"upstream": map[string]any{
 				"type": "roundrobin",
-				"nodes": []map[string]interface{}{
+				"nodes": []map[string]any{
 					{
 						"host":   base.UpstreamIp,
 						"port":   1980,
@@ -430,11 +430,11 @@ var _ = Describe("service update use patch method", func() {
 		})
 	})
 	It("update service use patch method", func() {
-		var createServiceBody map[string]interface{} = map[string]interface{}{
+		var createServiceBody map[string]any = map[string]any{
 			"name": "testpatch",
-			"upstream": map[string]interface{}{
+			"upstream": map[string]any{
 				"type": "roundrobin",
-				"nodes": []map[string]interface{}{
+				"nodes": []map[string]any{
 					{
 						"host":   base.UpstreamIp,
 						"port":   1981,
@@ -467,9 +467,9 @@ var _ = Describe("service update use patch method", func() {
 		})
 	})
 	It("Update service using path parameter patch method", func() {
-		var createUpstreamBody map[string]interface{} = map[string]interface{}{
+		var createUpstreamBody map[string]any = map[string]any{
 			"type": "roundrobin",
-			"nodes": []map[string]interface{}{
+			"nodes": []map[string]any{
 				{
 					"host":   base.UpstreamIp,
 					"port":   1980,
@@ -514,11 +514,11 @@ var _ = Describe("service update use patch method", func() {
 })
 
 var _ = Describe("test service delete", func() {
-	var createServiceBody map[string]interface{} = map[string]interface{}{
+	var createServiceBody map[string]any = map[string]any{
 		"name": "testservice",
-		"upstream": map[string]interface{}{
+		"upstream": map[string]any{
 			"type": "roundrobin",
-			"nodes": []map[string]interface{}{
+			"nodes": []map[string]any{
 				{
 					"host":   base.UpstreamIp,
 					"port":   1980,
@@ -617,11 +617,11 @@ var _ = Describe("test service delete", func() {
 })
 
 var _ = Describe("test service with hosts", func() {
-	var createServiceBody = map[string]interface{}{
+	var createServiceBody = map[string]any{
 		"name": "testservice",
-		"upstream": map[string]interface{}{
+		"upstream": map[string]any{
 			"type": "roundrobin",
-			"nodes": []map[string]interface{}{
+			"nodes": []map[string]any{
 				{
 					"host":   base.UpstreamIp,
 					"port":   1980,
@@ -637,13 +637,13 @@ var _ = Describe("test service with hosts", func() {
 	_createServiceBody, err := json.Marshal(createServiceBody)
 	Expect(err).To(BeNil())
 
-	var createRouteBody = map[string]interface{}{
+	var createRouteBody = map[string]any{
 		"id":   "r1",
 		"name": "route1",
 		"uri":  "/hello",
-		"upstream": map[string]interface{}{
+		"upstream": map[string]any{
 			"type": "roundrobin",
-			"nodes": map[string]interface{}{
+			"nodes": map[string]any{
 				base.UpstreamIp + ":1980": 1,
 			},
 		},

@@ -94,9 +94,11 @@ oidc:
 ldap:
   enabled: false
   host: 10.252.9.65:389
-  base_dn: "cn=Test,ou=System_User,dc=eeo-inc,dc=com"
-  password: "Test99999"
-  search_dn: ""
+  base_dn: "ou=System_User,dc=eeo-inc,dc=com"
+  bind_dn: "cn=Test,ou=System_User,dc=eeo-inc,dc=com"
+  bind_password: "Test99999"
+  filter: ""
+  start_tls: false
 
 
 plugins:

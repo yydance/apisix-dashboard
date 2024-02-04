@@ -35,6 +35,6 @@ func (h *Handler) ApplyRoute(r *gin.Engine) {
 	r.GET("/ping", wgin.Wraps(h.healthZHandler))
 }
 
-func (h *Handler) healthZHandler(c droplet.Context) (interface{}, error) {
+func (h *Handler) healthZHandler(c droplet.Context) (any, error) {
 	return "pong", nil
 }

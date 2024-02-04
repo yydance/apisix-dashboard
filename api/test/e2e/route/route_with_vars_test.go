@@ -26,9 +26,9 @@ import (
 	"github.com/apisix/manager-api/test/e2e/base"
 )
 
-var upstream map[string]interface{} = map[string]interface{}{
+var upstream map[string]any = map[string]any{
 	"type": "roundrobin",
-	"nodes": []map[string]interface{}{
+	"nodes": []map[string]any{
 		{
 			"host":   base.UpstreamIp,
 			"port":   1980,
@@ -39,7 +39,7 @@ var upstream map[string]interface{} = map[string]interface{}{
 
 var _ = Describe("test route with vars (args)", func() {
 	It("add route with vars (args)", func() {
-		var createRouteBody map[string]interface{} = map[string]interface{}{
+		var createRouteBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
 			"vars": [][]string{
@@ -91,7 +91,7 @@ var _ = Describe("test route with vars (args)", func() {
 		})
 	})
 	It("update route with vars (header)", func() {
-		var createRouteBody map[string]interface{} = map[string]interface{}{
+		var createRouteBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
 			"vars": [][]string{
@@ -143,7 +143,7 @@ var _ = Describe("test route with vars (args)", func() {
 		})
 	})
 	It("update route with vars (cookie)", func() {
-		var createRouteBody map[string]interface{} = map[string]interface{}{
+		var createRouteBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
 			"vars": [][]string{
@@ -219,7 +219,7 @@ var _ = Describe("test route with vars (args)", func() {
 
 var _ = Describe("test route with multiple vars (args, cookie and header)", func() {
 	It("add route with multiple vars (args, cookie and header)", func() {
-		var createRouteBody map[string]interface{} = map[string]interface{}{
+		var createRouteBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
 			"vars": [][]string{
@@ -314,7 +314,7 @@ var _ = Describe("test route with multiple vars (args, cookie and header)", func
 
 var _ = Describe("test route with vars (args is digital)", func() {
 	It("add route with vars (args is digital)", func() {
-		var createRouteBody map[string]interface{} = map[string]interface{}{
+		var createRouteBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
 			"vars": [][]string{

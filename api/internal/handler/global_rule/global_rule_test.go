@@ -64,11 +64,11 @@ func TestHandler_Get(t *testing.T) {
 	tests := []struct {
 		caseDesc   string
 		giveInput  *GetInput
-		giveRet    interface{}
+		giveRet    any
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "normal",
@@ -127,7 +127,7 @@ func TestHandler_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all condition",
@@ -147,7 +147,7 @@ func TestHandler_List(t *testing.T) {
 				{BaseInfo: entity.BaseInfo{ID: "global-rules-3"}},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.GlobalPlugins{BaseInfo: entity.BaseInfo{ID: "global-rules-1"}},
 					&entity.GlobalPlugins{BaseInfo: entity.BaseInfo{ID: "global-rules-2"}},
 					&entity.GlobalPlugins{BaseInfo: entity.BaseInfo{ID: "global-rules-3"}},
@@ -183,7 +183,7 @@ func TestHandler_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.giveData {
 					if input.Predicate == nil || input.Predicate(c) {
 						returnData = append(returnData, c)
@@ -211,11 +211,11 @@ func TestHandler_Set(t *testing.T) {
 		caseDesc   string
 		giveInput  *SetInput
 		giveCtx    context.Context
-		giveRet    interface{}
+		giveRet    any
 		giveErr    error
 		wantErr    error
 		wantInput  *entity.GlobalPlugins
-		wantRet    interface{}
+		wantRet    any
 		wantCalled bool
 	}{
 		{
@@ -223,28 +223,28 @@ func TestHandler_Set(t *testing.T) {
 			giveInput: &SetInput{
 				ID: "name",
 				GlobalPlugins: entity.GlobalPlugins{
-					Plugins: map[string]interface{}{
-						"jwt-auth": map[string]interface{}{},
+					Plugins: map[string]any{
+						"jwt-auth": map[string]any{},
 					},
 				},
 			},
 			giveCtx: context.WithValue(context.Background(), "test", "value"),
 			giveRet: &entity.GlobalPlugins{
 				BaseInfo: entity.BaseInfo{ID: "name"},
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{},
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{},
 				},
 			},
 			wantInput: &entity.GlobalPlugins{
 				BaseInfo: entity.BaseInfo{ID: "name"},
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{},
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{},
 				},
 			},
 			wantRet: &entity.GlobalPlugins{
 				BaseInfo: entity.BaseInfo{ID: "name"},
-				Plugins: map[string]interface{}{
-					"jwt-auth": map[string]interface{}{},
+				Plugins: map[string]any{
+					"jwt-auth": map[string]any{},
 				},
 			},
 			wantCalled: true,
@@ -261,7 +261,7 @@ func TestHandler_Set(t *testing.T) {
 			},
 			wantInput: &entity.GlobalPlugins{
 				BaseInfo: entity.BaseInfo{ID: "name"},
-				Plugins:  map[string]interface{}(nil),
+				Plugins:  map[string]any(nil),
 			},
 			wantErr: fmt.Errorf("create failed"),
 			wantRet: &data.SpecCodeResponse{
@@ -302,7 +302,7 @@ func TestHandler_BatchDelete(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput []string
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "normal",

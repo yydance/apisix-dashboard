@@ -108,7 +108,7 @@ func parseCert(crt, key string) ([]string, error) {
 }
 
 func handleSpecialField(resource string, reqBody []byte) ([]byte, error) {
-	var bodyMap map[string]interface{}
+	var bodyMap map[string]any
 	err := json.Unmarshal(reqBody, &bodyMap)
 	if err != nil {
 		return reqBody, fmt.Errorf("read request body failed: %s", err)
@@ -122,7 +122,7 @@ func handleSpecialField(resource string, reqBody []byte) ([]byte, error) {
 
 	// remove script, because it's a map, and need to be parsed into lua code
 	if resource == "routes" {
-		var route map[string]interface{}
+		var route map[string]any
 		err := json.Unmarshal(reqBody, &route)
 		if err != nil {
 			return nil, fmt.Errorf("read request body failed: %s", err)
@@ -138,7 +138,7 @@ func handleSpecialField(resource string, reqBody []byte) ([]byte, error) {
 
 	// SSL does not need to pass sni, we need to parse the SSL to get sni
 	if resource == "ssl" {
-		var ssl map[string]interface{}
+		var ssl map[string]any
 		err := json.Unmarshal(reqBody, &ssl)
 		if err != nil {
 			return nil, fmt.Errorf("read request body failed: %s", err)
@@ -159,7 +159,7 @@ func handleSpecialField(resource string, reqBody []byte) ([]byte, error) {
 func handleDefaultValue(resource string, reqBody []byte) ([]byte, error) {
 	// go jsonschema lib doesn't support setting default values, so we need to set for some fields necessary
 	if resource == "routes" {
-		var route map[string]interface{}
+		var route map[string]any
 		err := json.Unmarshal(reqBody, &route)
 		if err != nil {
 			return reqBody, fmt.Errorf("read request body failed: %s", err)

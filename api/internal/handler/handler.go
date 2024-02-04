@@ -94,7 +94,7 @@ func (mw *ErrorTransformMiddleware) Handle(ctx droplet.Context) error {
 	return nil
 }
 
-func IDCompare(idOnPath string, idOnBody interface{}) error {
+func IDCompare(idOnPath string, idOnBody any) error {
 	idOnBodyStr, ok := idOnBody.(string)
 	if !ok {
 		idOnBodyStr = utils.InterfaceToString(idOnBody)
@@ -108,11 +108,11 @@ func IDCompare(idOnPath string, idOnBody interface{}) error {
 	return nil
 }
 
-func NameExistCheck(ctx context.Context, stg store.Interface, resource, name string, excludeID interface{}) (interface{}, error) {
+func NameExistCheck(ctx context.Context, stg store.Interface, resource, name string, excludeID any) (any, error) {
 	ret, err := stg.List(ctx, store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			var objName string
-			var objID interface{}
+			var objID any
 			switch resource {
 			case "route":
 				objID = obj.(*entity.Route).ID

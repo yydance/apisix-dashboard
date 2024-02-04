@@ -65,7 +65,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 	streamRoute, err := h.streamRouteStore.Get(c.Context(), input.ID)
 	if err != nil {
@@ -82,10 +82,10 @@ type ListInput struct {
 	store.Pagination
 }
 
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 	ret, err := h.streamRouteStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.RemoteAddr != "" && !strings.Contains(obj.(*entity.StreamRoute).RemoteAddr, input.RemoteAddr) {
 				return false
 			}
@@ -114,7 +114,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	return ret, nil
 }
 
-func (h *Handler) Create(c droplet.Context) (interface{}, error) {
+func (h *Handler) Create(c droplet.Context) (any, error) {
 	streamRoute := c.Input().(*entity.StreamRoute)
 	if streamRoute.UpstreamID != nil {
 		upstreamID := utils.InterfaceToString(streamRoute.UpstreamID)
@@ -139,7 +139,7 @@ type UpdateInput struct {
 	entity.StreamRoute
 }
 
-func (h *Handler) Update(c droplet.Context) (interface{}, error) {
+func (h *Handler) Update(c droplet.Context) (any, error) {
 	input := c.Input().(*UpdateInput)
 
 	// check if ID in body is equal ID in path
@@ -175,7 +175,7 @@ type BatchDelete struct {
 	IDs string `auto_read:"ids,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDelete)
 
 	if err := h.streamRouteStore.BatchDelete(c.Context(), strings.Split(input.IDs, ",")); err != nil {

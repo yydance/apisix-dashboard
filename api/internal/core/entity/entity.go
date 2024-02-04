@@ -24,9 +24,9 @@ import (
 )
 
 type BaseInfo struct {
-	ID         interface{} `json:"id"`
-	CreateTime int64       `json:"create_time,omitempty"`
-	UpdateTime int64       `json:"update_time,omitempty"`
+	ID         any   `json:"id"`
+	CreateTime int64 `json:"create_time,omitempty"`
+	UpdateTime int64 `json:"update_time,omitempty"`
 }
 
 func (info *BaseInfo) GetBaseInfo() *BaseInfo {
@@ -63,29 +63,29 @@ type Status uint8
 // swagger:model Route
 type Route struct {
 	BaseInfo
-	URI             string                 `json:"uri,omitempty"`
-	Uris            []string               `json:"uris,omitempty"`
-	Name            string                 `json:"name"`
-	Desc            string                 `json:"desc,omitempty"`
-	Priority        int                    `json:"priority,omitempty"`
-	Methods         []string               `json:"methods,omitempty"`
-	Host            string                 `json:"host,omitempty"`
-	Hosts           []string               `json:"hosts,omitempty"`
-	RemoteAddr      string                 `json:"remote_addr,omitempty"`
-	RemoteAddrs     []string               `json:"remote_addrs,omitempty"`
-	Vars            []interface{}          `json:"vars,omitempty"`
-	FilterFunc      string                 `json:"filter_func,omitempty"`
-	Script          interface{}            `json:"script,omitempty"`
-	ScriptID        interface{}            `json:"script_id,omitempty"` // For debug and optimization(cache), currently same as Route's ID
-	Plugins         map[string]interface{} `json:"plugins,omitempty"`
-	PluginConfigID  interface{}            `json:"plugin_config_id,omitempty"`
-	Upstream        *UpstreamDef           `json:"upstream,omitempty"`
-	ServiceID       interface{}            `json:"service_id,omitempty"`
-	UpstreamID      interface{}            `json:"upstream_id,omitempty"`
-	ServiceProtocol string                 `json:"service_protocol,omitempty"`
-	Labels          map[string]string      `json:"labels,omitempty"`
-	EnableWebsocket bool                   `json:"enable_websocket,omitempty"`
-	Status          Status                 `json:"status"`
+	URI             string            `json:"uri,omitempty"`
+	Uris            []string          `json:"uris,omitempty"`
+	Name            string            `json:"name"`
+	Desc            string            `json:"desc,omitempty"`
+	Priority        int               `json:"priority,omitempty"`
+	Methods         []string          `json:"methods,omitempty"`
+	Host            string            `json:"host,omitempty"`
+	Hosts           []string          `json:"hosts,omitempty"`
+	RemoteAddr      string            `json:"remote_addr,omitempty"`
+	RemoteAddrs     []string          `json:"remote_addrs,omitempty"`
+	Vars            []any             `json:"vars,omitempty"`
+	FilterFunc      string            `json:"filter_func,omitempty"`
+	Script          any               `json:"script,omitempty"`
+	ScriptID        any               `json:"script_id,omitempty"` // For debug and optimization(cache), currently same as Route's ID
+	Plugins         map[string]any    `json:"plugins,omitempty"`
+	PluginConfigID  any               `json:"plugin_config_id,omitempty"`
+	Upstream        *UpstreamDef      `json:"upstream,omitempty"`
+	ServiceID       any               `json:"service_id,omitempty"`
+	UpstreamID      any               `json:"upstream_id,omitempty"`
+	ServiceProtocol string            `json:"service_protocol,omitempty"`
+	Labels          map[string]string `json:"labels,omitempty"`
+	EnableWebsocket bool              `json:"enable_websocket,omitempty"`
+	Status          Status            `json:"status"`
 }
 
 // --- structures for upstream start  ---
@@ -97,11 +97,11 @@ type Timeout struct {
 }
 
 type Node struct {
-	Host     string      `json:"host,omitempty"`
-	Port     int         `json:"port,omitempty"`
-	Weight   int         `json:"weight"`
-	Metadata interface{} `json:"metadata,omitempty"`
-	Priority int         `json:"priority,omitempty"`
+	Host     string `json:"host,omitempty"`
+	Port     int    `json:"port,omitempty"`
+	Weight   int    `json:"weight"`
+	Metadata any    `json:"metadata,omitempty"`
+	Priority int    `json:"priority,omitempty"`
 }
 
 type K8sInfo struct {
@@ -162,16 +162,16 @@ type UpstreamKeepalivePool struct {
 }
 
 type UpstreamDef struct {
-	Nodes         interface{}            `json:"nodes,omitempty"`
+	Nodes         any                    `json:"nodes,omitempty"`
 	Retries       *int                   `json:"retries,omitempty"`
 	Timeout       *Timeout               `json:"timeout,omitempty"`
 	Type          string                 `json:"type,omitempty"`
-	Checks        interface{}            `json:"checks,omitempty"`
+	Checks        any                    `json:"checks,omitempty"`
 	HashOn        string                 `json:"hash_on,omitempty"`
 	Key           string                 `json:"key,omitempty"`
 	Scheme        string                 `json:"scheme,omitempty"`
 	DiscoveryType string                 `json:"discovery_type,omitempty"`
-	DiscoveryArgs map[string]interface{} `json:"discovery_args,omitempty"`
+	DiscoveryArgs map[string]any         `json:"discovery_args,omitempty"`
 	PassHost      string                 `json:"pass_host,omitempty"`
 	UpstreamHost  string                 `json:"upstream_host,omitempty"`
 	Name          string                 `json:"name,omitempty"`
@@ -190,8 +190,8 @@ type Upstream struct {
 }
 
 type UpstreamNameResponse struct {
-	ID   interface{} `json:"id"`
-	Name string      `json:"name"`
+	ID   any    `json:"id"`
+	Name string `json:"name"`
 }
 
 func (upstream *Upstream) Parse2NameResponse() (*UpstreamNameResponse, error) {
@@ -206,12 +206,12 @@ func (upstream *Upstream) Parse2NameResponse() (*UpstreamNameResponse, error) {
 
 // swagger:model Consumer
 type Consumer struct {
-	Username   string                 `json:"username"`
-	Desc       string                 `json:"desc,omitempty"`
-	Plugins    map[string]interface{} `json:"plugins,omitempty"`
-	Labels     map[string]string      `json:"labels,omitempty"`
-	CreateTime int64                  `json:"create_time,omitempty"`
-	UpdateTime int64                  `json:"update_time,omitempty"`
+	Username   string            `json:"username"`
+	Desc       string            `json:"desc,omitempty"`
+	Plugins    map[string]any    `json:"plugins,omitempty"`
+	Labels     map[string]string `json:"labels,omitempty"`
+	CreateTime int64             `json:"create_time,omitempty"`
+	UpdateTime int64             `json:"update_time,omitempty"`
 }
 
 type SSLClient struct {
@@ -239,32 +239,32 @@ type SSL struct {
 // swagger:model Service
 type Service struct {
 	BaseInfo
-	Name            string                 `json:"name,omitempty"`
-	Desc            string                 `json:"desc,omitempty"`
-	Upstream        *UpstreamDef           `json:"upstream,omitempty"`
-	UpstreamID      interface{}            `json:"upstream_id,omitempty"`
-	Plugins         map[string]interface{} `json:"plugins,omitempty"`
-	Script          string                 `json:"script,omitempty"`
-	Labels          map[string]string      `json:"labels,omitempty"`
-	EnableWebsocket bool                   `json:"enable_websocket,omitempty"`
-	Hosts           []string               `json:"hosts,omitempty"`
+	Name            string            `json:"name,omitempty"`
+	Desc            string            `json:"desc,omitempty"`
+	Upstream        *UpstreamDef      `json:"upstream,omitempty"`
+	UpstreamID      any               `json:"upstream_id,omitempty"`
+	Plugins         map[string]any    `json:"plugins,omitempty"`
+	Script          string            `json:"script,omitempty"`
+	Labels          map[string]string `json:"labels,omitempty"`
+	EnableWebsocket bool              `json:"enable_websocket,omitempty"`
+	Hosts           []string          `json:"hosts,omitempty"`
 }
 
 type Script struct {
-	ID     string      `json:"id"`
-	Script interface{} `json:"script,omitempty"`
+	ID     string `json:"id"`
+	Script any    `json:"script,omitempty"`
 }
 
 type RequestValidation struct {
-	Type       string      `json:"type,omitempty"`
-	Required   []string    `json:"required,omitempty"`
-	Properties interface{} `json:"properties,omitempty"`
+	Type       string   `json:"type,omitempty"`
+	Required   []string `json:"required,omitempty"`
+	Properties any      `json:"properties,omitempty"`
 }
 
 // swagger:model GlobalPlugins
 type GlobalPlugins struct {
 	BaseInfo
-	Plugins map[string]interface{} `json:"plugins"`
+	Plugins map[string]any `json:"plugins"`
 }
 
 type ServerInfo struct {
@@ -280,9 +280,9 @@ type ServerInfo struct {
 // swagger:model GlobalPlugins
 type PluginConfig struct {
 	BaseInfo
-	Desc    string                 `json:"desc,omitempty"`
-	Plugins map[string]interface{} `json:"plugins"`
-	Labels  map[string]string      `json:"labels,omitempty"`
+	Desc    string            `json:"desc,omitempty"`
+	Plugins map[string]any    `json:"plugins"`
+	Labels  map[string]string `json:"labels,omitempty"`
 }
 
 // swagger:model Proto
@@ -295,21 +295,35 @@ type Proto struct {
 // swagger:model StreamRoute
 type StreamRoute struct {
 	BaseInfo
-	Desc       string                 `json:"desc,omitempty"`
-	RemoteAddr string                 `json:"remote_addr,omitempty"`
-	ServerAddr string                 `json:"server_addr,omitempty"`
-	ServerPort int                    `json:"server_port,omitempty"`
-	SNI        string                 `json:"sni,omitempty"`
-	Upstream   *UpstreamDef           `json:"upstream,omitempty"`
-	UpstreamID interface{}            `json:"upstream_id,omitempty"`
-	Plugins    map[string]interface{} `json:"plugins,omitempty"`
+	Desc       string         `json:"desc,omitempty"`
+	RemoteAddr string         `json:"remote_addr,omitempty"`
+	ServerAddr string         `json:"server_addr,omitempty"`
+	ServerPort int            `json:"server_port,omitempty"`
+	SNI        string         `json:"sni,omitempty"`
+	Upstream   *UpstreamDef   `json:"upstream,omitempty"`
+	UpstreamID any            `json:"upstream_id,omitempty"`
+	Plugins    map[string]any `json:"plugins,omitempty"`
 }
 
 // swagger:model SystemConfig
 type SystemConfig struct {
-	ConfigName string                 `json:"config_name"`
-	Desc       string                 `json:"desc,omitempty"`
-	Payload    map[string]interface{} `json:"payload,omitempty"`
-	CreateTime int64                  `json:"create_time,omitempty"`
-	UpdateTime int64                  `json:"update_time,omitempty"`
+	ConfigName string         `json:"config_name"`
+	Desc       string         `json:"desc,omitempty"`
+	Payload    map[string]any `json:"payload,omitempty"`
+	CreateTime int64          `json:"create_time,omitempty"`
+	UpdateTime int64          `json:"update_time,omitempty"`
+}
+
+type User struct {
+	BaseInfo
+	Name   string `json:"user_name"`
+	Status bool   `json:"status"`
+	Type   string `json:"type"`
+	TeamID any    `json:"team_id"`
+	RoleID any    `json:"role_id"`
+}
+
+type Team struct {
+	BaseInfo
+	Name string `json:"team_name"`
 }

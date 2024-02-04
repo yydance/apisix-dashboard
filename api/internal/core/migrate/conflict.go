@@ -28,7 +28,7 @@ func isConflicted(ctx context.Context, new *DataSet) (bool, *DataSet) {
 	isConflict := false
 	conflictedData := newDataSet()
 	store.RangeStore(func(key store.HubKey, s *store.GenericStore) bool {
-		new.rangeData(key, func(i int, obj interface{}) bool {
+		new.rangeData(key, func(i int, obj any) bool {
 			// Only check key of store conflict for now.
 			// TODO: Maybe check name of some entiries.
 			_, err := s.CreateCheck(obj)

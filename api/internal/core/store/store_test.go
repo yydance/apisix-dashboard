@@ -35,10 +35,10 @@ import (
 )
 
 func TestNewGenericStore(t *testing.T) {
-	dfFunc := func(obj interface{}) string { return "" }
+	dfFunc := func(obj any) string { return "" }
 	tests := []struct {
 		giveOpt   GenericStoreOption
-		giveCache map[string]interface{}
+		giveCache map[string]any
 		wantStore *GenericStore
 		wantErr   error
 	}{
@@ -119,7 +119,7 @@ func TestGenericStore_Init(t *testing.T) {
 		giveWatchCh     chan storage.WatchResponse
 		giveResp        storage.WatchResponse
 		wantErr         error
-		wantCache       map[string]interface{}
+		wantCache       map[string]any
 		wantListCalled  bool
 		wantWatchCalled bool
 	}{
@@ -129,7 +129,7 @@ func TestGenericStore_Init(t *testing.T) {
 				opt: GenericStoreOption{
 					BasePath: "test",
 					ObjType:  reflect.TypeOf(TestStruct{}),
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -162,7 +162,7 @@ func TestGenericStore_Init(t *testing.T) {
 					},
 				},
 			},
-			wantCache: map[string]interface{}{
+			wantCache: map[string]any{
 				"demo2-f1": &TestStruct{
 					BaseInfo: entity.BaseInfo{ID: "demo2-f1"},
 					Field1:   "demo2-f1",
@@ -190,7 +190,7 @@ func TestGenericStore_Init(t *testing.T) {
 				opt: GenericStoreOption{
 					BasePath: "test",
 					ObjType:  reflect.TypeOf(TestStruct{}),
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -234,7 +234,7 @@ func TestGenericStore_Init(t *testing.T) {
 		tc.giveWatchCh <- tc.giveResp
 		time.Sleep(1 * time.Second)
 		close(tc.giveWatchCh)
-		tc.giveStore.cache.Range(func(key, value interface{}) bool {
+		tc.giveStore.cache.Range(func(key, value any) bool {
 			assert.Equal(t, tc.wantCache[key.(string)], value)
 			return true
 		})
@@ -246,14 +246,14 @@ func TestGenericStore_Get(t *testing.T) {
 		caseDesc  string
 		giveId    string
 		giveStore *GenericStore
-		giveCache map[string]interface{}
-		wantRet   interface{}
+		giveCache map[string]any
+		wantRet   any
 		wantErr   error
 	}{
 		{
 			caseDesc: "sanity",
 			giveId:   "test1",
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test2": TestStruct{
 					Field1: "test2-f1",
 					Field2: "test2-f2",
@@ -272,7 +272,7 @@ func TestGenericStore_Get(t *testing.T) {
 		{
 			caseDesc: "not found",
 			giveId:   "not",
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test2": TestStruct{
 					Field1: "test2-f1",
 					Field2: "test2-f2",
@@ -302,14 +302,14 @@ func TestGenericStore_List(t *testing.T) {
 		caseDesc  string
 		giveInput ListInput
 		giveStore *GenericStore
-		giveCache map[string]interface{}
+		giveCache map[string]any
 		wantRet   *ListOutput
 		wantErr   error
 	}{
 		{
 			caseDesc: "sanity",
 			giveInput: ListInput{
-				Predicate: func(obj interface{}) bool {
+				Predicate: func(obj any) bool {
 					for _, v := range strings.Split("test1-f2,test3-f2", ",") {
 						if v == obj.(*TestStruct).Field2 {
 							return true
@@ -318,7 +318,7 @@ func TestGenericStore_List(t *testing.T) {
 					return false
 				},
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": &TestStruct{
 					Field1: "test1-f1",
 					Field2: "test1-f2",
@@ -338,7 +338,7 @@ func TestGenericStore_List(t *testing.T) {
 			},
 			giveStore: &GenericStore{},
 			wantRet: &ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&TestStruct{
 						Field1: "test1-f1",
 						Field2: "test1-f2",
@@ -354,7 +354,7 @@ func TestGenericStore_List(t *testing.T) {
 		{
 			caseDesc: "sanity-page",
 			giveInput: ListInput{
-				Predicate: func(obj interface{}) bool {
+				Predicate: func(obj any) bool {
 					for _, v := range strings.Split("test1-f2,test3-f2", ",") {
 						if v == obj.(*TestStruct).Field2 {
 							return true
@@ -365,7 +365,7 @@ func TestGenericStore_List(t *testing.T) {
 				PageSize:   1,
 				PageNumber: 2,
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": &TestStruct{
 					Field1: "test1-f1",
 					Field2: "test1-f2",
@@ -388,7 +388,7 @@ func TestGenericStore_List(t *testing.T) {
 			},
 			giveStore: &GenericStore{},
 			wantRet: &ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&TestStruct{
 						BaseInfo: entity.BaseInfo{
 							CreateTime: 100,
@@ -403,7 +403,7 @@ func TestGenericStore_List(t *testing.T) {
 		{
 			caseDesc: "page overflow",
 			giveInput: ListInput{
-				Predicate: func(obj interface{}) bool {
+				Predicate: func(obj any) bool {
 					for _, v := range strings.Split("test1-f2,test3-f2", ",") {
 						if v == obj.(*TestStruct).Field2 {
 							return true
@@ -414,7 +414,7 @@ func TestGenericStore_List(t *testing.T) {
 				PageSize:   1,
 				PageNumber: 33,
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": &TestStruct{
 					Field1: "test1-f1",
 					Field2: "test1-f2",
@@ -434,7 +434,7 @@ func TestGenericStore_List(t *testing.T) {
 			},
 			giveStore: &GenericStore{},
 			wantRet: &ListOutput{
-				Rows:      []interface{}{},
+				Rows:      []any{},
 				TotalSize: 2,
 			},
 		},
@@ -455,15 +455,15 @@ func TestGenericStore_List(t *testing.T) {
 func TestGenericStore_ingestValidate(t *testing.T) {
 	tests := []struct {
 		giveStore       *GenericStore
-		giveCache       map[string]interface{}
-		giveObj         interface{}
-		giveStockCheck  func(obj interface{}, stockObj interface{}) error
+		giveCache       map[string]any
+		giveObj         any
+		giveStockCheck  func(obj any, stockObj any) error
 		giveValidateErr error
 		wantErr         error
 	}{
 		{
 			giveStore: &GenericStore{},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1-f1": &TestStruct{Field1: "test1-f1", Field2: "test1-f2"},
 				"test2-f1": &TestStruct{Field1: "test2-f1", Field2: "test2-f2"},
 			},
@@ -471,7 +471,7 @@ func TestGenericStore_ingestValidate(t *testing.T) {
 				Field1: "test3-f1",
 				Field2: "test2-f2",
 			},
-			giveStockCheck: func(obj interface{}, stockObj interface{}) error {
+			giveStockCheck: func(obj any, stockObj any) error {
 				if obj.(*TestStruct).Field2 == stockObj.(*TestStruct).Field2 {
 					return fmt.Errorf("field2: %s is conflicted", obj.(*TestStruct).Field2)
 				}
@@ -511,7 +511,7 @@ func TestGenericStore_Create(t *testing.T) {
 	tests := []struct {
 		caseDesc        string
 		giveStore       *GenericStore
-		giveCache       map[string]interface{}
+		giveCache       map[string]any
 		giveObj         *TestStruct
 		giveErr         error
 		giveValidateErr error
@@ -527,7 +527,7 @@ func TestGenericStore_Create(t *testing.T) {
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -543,7 +543,7 @@ func TestGenericStore_Create(t *testing.T) {
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -558,13 +558,13 @@ func TestGenericStore_Create(t *testing.T) {
 				Field1: "test1",
 				Field2: "test2",
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": struct{}{},
 			},
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -577,7 +577,7 @@ func TestGenericStore_Create(t *testing.T) {
 				Field1: "test1",
 				Field2: "test2",
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": struct{}{},
 			},
 			giveStore: &GenericStore{
@@ -636,7 +636,7 @@ func TestGenericStore_Update(t *testing.T) {
 	tests := []struct {
 		caseDesc        string
 		giveStore       *GenericStore
-		giveCache       map[string]interface{}
+		giveCache       map[string]any
 		giveObj         *TestStruct
 		giveErr         error
 		giveValidateErr error
@@ -649,13 +649,13 @@ func TestGenericStore_Update(t *testing.T) {
 				Field1: "test1",
 				Field2: "test2",
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": &TestStruct{},
 			},
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -668,13 +668,13 @@ func TestGenericStore_Update(t *testing.T) {
 				Field1: "test1",
 				Field2: "test2",
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test1": &TestStruct{},
 			},
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -689,13 +689,13 @@ func TestGenericStore_Update(t *testing.T) {
 				Field1: "test1",
 				Field2: "test2",
 			},
-			giveCache: map[string]interface{}{
+			giveCache: map[string]any{
 				"test2": &TestStruct{},
 			},
 			giveStore: &GenericStore{
 				opt: GenericStoreOption{
 					BasePath: "test/path",
-					KeyFunc: func(obj interface{}) string {
+					KeyFunc: func(obj any) string {
 						return obj.(*TestStruct).Field1
 					},
 				},
@@ -798,7 +798,7 @@ func TestGenericStore_StringToObjPtr(t *testing.T) {
 	s, err := NewGenericStore(GenericStoreOption{
 		BasePath: "test",
 		ObjType:  reflect.TypeOf(entity.SSL{}),
-		KeyFunc: func(obj interface{}) string {
+		KeyFunc: func(obj any) string {
 			r := obj.(*entity.Route)
 			return utils.InterfaceToString(r.ID)
 		},

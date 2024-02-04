@@ -19,7 +19,6 @@ package conf
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -74,6 +73,9 @@ var (
 	OidcConfig       oauth2.Config
 	OidcExpireTime   int
 	OidcUserInfoURL  string
+	LdapEnabled      = false
+	LdapConfig       *Ldap
+	LdapFilter       = "(&(objectClass=inetOrgPerson)(cn=%s))"
 )
 
 type MTLS struct {
@@ -149,11 +151,22 @@ type Oidc struct {
 	Scope        string
 }
 
+type Ldap struct {
+	Enabled      bool   `mapstructure:"enabled"`
+	Host         string `mapstructure:"host"`
+	BaseDN       string `mapstructure:"base_dn"`
+	BindDN       string `mapstructure:"bind_dn"`
+	BindPassword string `mapstructure:"bind_password"`
+	StartTLS     bool   `mapstructure:"start_tls,default=false"`
+	Filter       string `mapstructure:"filter"`
+}
+
 type Config struct {
 	Conf           Conf
 	Authentication Authentication
 	Plugins        []string
 	Oidc           Oidc
+	Ldap           Ldap
 }
 
 type Security struct {
@@ -280,6 +293,10 @@ func setupConfig() {
 	// set authentication
 	initAuthentication(config.Authentication)
 
+	// set ldap
+	if config.Ldap.Host != "" {
+		initLdap(config.Ldap)
+	}
 	// set Oidc
 	initOidc(config.Oidc)
 
@@ -336,11 +353,11 @@ func initSchema() {
 		err                    error
 	)
 
-	if apisixSchemaContent, err = ioutil.ReadFile(apisixSchemaPath); err != nil {
+	if apisixSchemaContent, err = os.ReadFile(apisixSchemaPath); err != nil {
 		panic(fmt.Errorf("fail to read configuration: %s, error: %s", apisixSchemaPath, err.Error()))
 	}
 
-	if customizeSchemaContent, err = ioutil.ReadFile(customizeSchemaPath); err != nil {
+	if customizeSchemaContent, err = os.ReadFile(customizeSchemaPath); err != nil {
 		panic(fmt.Errorf("fail to read configuration: %s, error: %s", customizeSchemaPath, err.Error()))
 	}
 
@@ -354,8 +371,8 @@ func initSchema() {
 
 func mergeSchema(apisixSchema, customizeSchema []byte) ([]byte, error) {
 	var (
-		apisixSchemaMap    map[string]map[string]interface{}
-		customizeSchemaMap map[string]map[string]interface{}
+		apisixSchemaMap    map[string]map[string]any
+		customizeSchemaMap map[string]map[string]any
 	)
 
 	if err := json.Unmarshal(apisixSchema, &apisixSchemaMap); err != nil {
@@ -397,6 +414,29 @@ func initEtcdConfig(conf Etcd) {
 		MTLS:      conf.MTLS,
 		Prefix:    prefix,
 	}
+}
+
+func initLdap(conf Ldap) {
+	var host = "127.0.0.1:389"
+	if conf.Host != "" {
+		host = conf.Host
+	}
+	if conf.Enabled {
+		LdapEnabled = true
+	}
+	if conf.Filter != "" {
+		LdapFilter = conf.Filter
+	}
+	LdapConfig = &Ldap{
+		Enabled:      LdapEnabled,
+		Host:         host,
+		BaseDN:       conf.BaseDN,
+		BindDN:       conf.BindDN,
+		BindPassword: conf.BindPassword,
+		Filter:       LdapFilter,
+		StartTLS:     conf.StartTLS,
+	}
+
 }
 
 // initialize parallelism settings

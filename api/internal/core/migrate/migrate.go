@@ -33,7 +33,7 @@ var (
 func Export(ctx context.Context) ([]byte, error) {
 	exportData := newDataSet()
 	store.RangeStore(func(key store.HubKey, s *store.GenericStore) bool {
-		s.Range(ctx, func(_ string, obj interface{}) bool {
+		s.Range(ctx, func(_ string, obj any) bool {
 			err := exportData.Add(obj)
 			if err != nil {
 				log.Errorf("Add obj to export list failed:%s", err)
@@ -71,7 +71,7 @@ func Import(ctx context.Context, data []byte, mode ConflictMode) (*DataSet, erro
 		return conflictData, ErrConflict
 	}
 	store.RangeStore(func(key store.HubKey, s *store.GenericStore) bool {
-		importData.rangeData(key, func(i int, obj interface{}) bool {
+		importData.rangeData(key, func(i int, obj any) bool {
 			_, e := s.CreateCheck(obj)
 			if e != nil {
 				switch mode {

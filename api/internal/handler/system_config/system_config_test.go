@@ -35,7 +35,7 @@ func TestSystem_Get(t *testing.T) {
 		caseDesc  string
 		giveInput *GetInput
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 		mockStore store.Interface
 		mockFunc  func(tc *testCase)
 	}
@@ -57,7 +57,7 @@ func TestSystem_Get(t *testing.T) {
 			wantErr:   nil,
 			wantRet: entity.SystemConfig{
 				ConfigName: "grafana",
-				Payload: map[string]interface{}{
+				Payload: map[string]any{
 					"url": "http://127.0.0.1:3000",
 				},
 			},
@@ -90,14 +90,14 @@ func TestSystem_Post(t *testing.T) {
 		caseDesc  string
 		giveInput *entity.SystemConfig
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 		mockStore store.Interface
 		mockFunc  func(tc *testCase)
 	}
 
 	systemConfig := entity.SystemConfig{
 		ConfigName: "grafana",
-		Payload: map[string]interface{}{
+		Payload: map[string]any{
 			"url": "http://127.0.0.1:3000",
 		},
 	}
@@ -119,7 +119,7 @@ func TestSystem_Post(t *testing.T) {
 			wantErr:   nil,
 			wantRet: entity.SystemConfig{
 				ConfigName: "grafana",
-				Payload: map[string]interface{}{
+				Payload: map[string]any{
 					"url": "http://127.0.0.1:3000",
 				},
 			},
@@ -152,14 +152,14 @@ func TestSystem_Put(t *testing.T) {
 		caseDesc  string
 		giveInput *entity.SystemConfig
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 		mockStore store.Interface
 		mockFunc  func(tc *testCase)
 	}
 
 	systemConfig := entity.SystemConfig{
 		ConfigName: "grafana",
-		Payload: map[string]interface{}{
+		Payload: map[string]any{
 			"url": "http://127.0.0.1:3000",
 		},
 	}
@@ -181,7 +181,7 @@ func TestSystem_Put(t *testing.T) {
 			wantErr:   nil,
 			wantRet: entity.SystemConfig{
 				ConfigName: "grafana",
-				Payload: map[string]interface{}{
+				Payload: map[string]any{
 					"url": "http://127.0.0.1:3000",
 				},
 			},
@@ -214,7 +214,7 @@ func TestSystem_Delete(t *testing.T) {
 		caseDesc  string
 		giveInput *DeleteInput
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 		mockStore store.Interface
 		mockFunc  func(tc *testCase)
 	}

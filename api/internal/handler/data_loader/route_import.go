@@ -90,7 +90,7 @@ const (
 	LoaderTypeOpenAPI3 LoaderType = "openapi3"
 )
 
-func (h *ImportHandler) Import(c droplet.Context) (interface{}, error) {
+func (h *ImportHandler) Import(c droplet.Context) (any, error) {
 	input := c.Input().(*ImportInput)
 
 	// input file content check
@@ -147,7 +147,7 @@ func (h *ImportHandler) preCheck(ctx context.Context, data *loader.DataSets) map
 			// has been found, the HTTP method is checked for overlap, and
 			// if there is overlap it is determined to be a duplicate route
 			// and the import is rejected.
-			Predicate: func(obj interface{}) bool {
+			Predicate: func(obj any) bool {
 				r := obj.(*entity.Route)
 
 				// Check URI and host duplication

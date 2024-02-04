@@ -42,8 +42,8 @@ func Test_mergeSchema(t *testing.T) {
 
 		t.Run(tt.name, func(t *testing.T) {
 			var (
-				wantMap map[string]interface{}
-				gotMap  map[string]interface{}
+				wantMap map[string]any
+				gotMap  map[string]any
 			)
 
 			got, err := mergeSchema(tt.args.apisixSchema, tt.args.customizeSchema)

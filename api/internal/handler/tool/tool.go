@@ -41,7 +41,7 @@ func (h *Handler) ApplyRoute(r *gin.Engine) {
 	r.GET("/apisix/admin/tool/version", wgin.Wraps(h.Version))
 }
 
-func (h *Handler) Version(_ droplet.Context) (interface{}, error) {
+func (h *Handler) Version(_ droplet.Context) (any, error) {
 	hash, version := utils.GetHashAndVersion()
 	return &InfoOutput{
 		Hash:    hash,

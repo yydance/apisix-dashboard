@@ -67,7 +67,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.globalRuleStore.Get(c.Context(), input.ID)
@@ -89,28 +89,30 @@ type ListInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/GlobalPlugins"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/GlobalPlugins"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.globalRuleStore.List(c.Context(), store.ListInput{
@@ -129,7 +131,7 @@ type SetInput struct {
 	ID string `auto_read:"id,path"`
 }
 
-func (h *Handler) Set(c droplet.Context) (interface{}, error) {
+func (h *Handler) Set(c droplet.Context) (any, error) {
 	input := c.Input().(*SetInput)
 
 	// check if ID in body is equal ID in path
@@ -156,7 +158,7 @@ type PatchInput struct {
 	Body    []byte `auto_read:"@body"`
 }
 
-func (h *Handler) Patch(c droplet.Context) (interface{}, error) {
+func (h *Handler) Patch(c droplet.Context) (any, error) {
 	input := c.Input().(*PatchInput)
 	reqBody := input.Body
 	ID := input.ID
@@ -191,7 +193,7 @@ type BatchDeleteInput struct {
 	ID string `auto_read:"id,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDeleteInput)
 
 	if err := h.globalRuleStore.BatchDelete(c.Context(), []string{input.ID}); err != nil {

@@ -153,12 +153,12 @@ type HttpTestCase struct {
 	Query         string
 	Body          string
 	Headers       map[string]string
-	Headers_test  map[string]interface{}
+	Headers_test  map[string]any
 	ExpectStatus  int
 	ExpectCode    int
 	ExpectMessage string
-	ExpectBody    interface{}
-	UnexpectBody  interface{}
+	ExpectBody    any
+	UnexpectBody  any
 	ExpectHeaders map[string]string
 	Sleep         time.Duration //ms
 }
@@ -302,9 +302,9 @@ func GetResourceList(resource string) string {
 
 func CleanResource(resource string) {
 	resources := GetResourceList(resource)
-	list := gjson.Get(resources, "data.rows").Value().([]interface{})
+	list := gjson.Get(resources, "data.rows").Value().([]any)
 	for _, item := range list {
-		resourceObj := item.(map[string]interface{})
+		resourceObj := item.(map[string]any)
 		tc := HttpTestCase{
 			Desc:    "delete " + resource + "/" + resourceObj["id"].(string),
 			Object:  ManagerApiExpect(),

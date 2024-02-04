@@ -53,7 +53,7 @@ func TestSSL_Get(t *testing.T) {
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "normal",
@@ -167,7 +167,7 @@ func TestSSLs_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all ssl",
@@ -182,7 +182,7 @@ func TestSSLs_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[0],
 					mockData[1],
 					mockData[2],
@@ -204,7 +204,7 @@ func TestSSLs_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[1],
 				},
 				TotalSize: 1,
@@ -222,7 +222,7 @@ func TestSSLs_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range mockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -256,11 +256,11 @@ func TestSSL_Create(t *testing.T) {
 		caseDesc  string
 		getCalled bool
 		giveInput *entity.SSL
-		giveRet   interface{}
+		giveRet   any
 		giveErr   error
 		wantInput *entity.SSL
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc:  "create success",
@@ -388,10 +388,10 @@ func TestSSL_Update(t *testing.T) {
 		getCalled bool
 		giveInput *UpdateInput
 		giveErr   error
-		giveRet   interface{}
+		giveRet   any
 		wantInput *entity.SSL
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc:  "create success",
@@ -543,10 +543,10 @@ func TestSSL_Patch(t *testing.T) {
 		getCalled bool
 		giveInput *PatchInput
 		giveErr   error
-		giveRet   interface{}
+		giveRet   any
 		wantInput *entity.SSL
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "patch success",
@@ -707,7 +707,7 @@ func TestSSLs_Delete(t *testing.T) {
 		giveErr   error
 		wantInput []string
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "delete success",
@@ -809,7 +809,7 @@ func TestSSL_Exist(t *testing.T) {
 		getCalled bool
 		wantInput []string
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "check SSL cert not exists for sni",
@@ -854,7 +854,7 @@ func TestSSL_Exist(t *testing.T) {
 			sslStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range mockData {
 					res = append(res, c)
 				}

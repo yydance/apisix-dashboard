@@ -21,25 +21,25 @@ type GetBaseInfo interface {
 }
 
 type GetPlugins interface {
-	GetPlugins() map[string]interface{}
+	GetPlugins() map[string]any
 }
 
-func (r *Route) GetPlugins() map[string]interface{} {
+func (r *Route) GetPlugins() map[string]any {
 	return r.Plugins
 }
 
-func (s *Service) GetPlugins() map[string]interface{} {
+func (s *Service) GetPlugins() map[string]any {
 	return s.Plugins
 }
 
-func (c *Consumer) GetPlugins() map[string]interface{} {
+func (c *Consumer) GetPlugins() map[string]any {
 	return c.Plugins
 }
 
-func (g *GlobalPlugins) GetPlugins() map[string]interface{} {
+func (g *GlobalPlugins) GetPlugins() map[string]any {
 	return g.Plugins
 }
 
-func (p *PluginConfig) GetPlugins() map[string]interface{} {
+func (p *PluginConfig) GetPlugins() map[string]any {
 	return p.Plugins
 }

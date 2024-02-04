@@ -30,9 +30,9 @@ import (
 	"github.com/apisix/manager-api/test/e2e/base"
 )
 
-var upstream map[string]interface{} = map[string]interface{}{
+var upstream map[string]any = map[string]any{
 	"type": "roundrobin",
-	"nodes": []map[string]interface{}{
+	"nodes": []map[string]any{
 		{
 			"host":   base.UpstreamIp,
 			"port":   1980,
@@ -83,11 +83,11 @@ var _ = Describe("Route_Online_Debug_Route_With_Query_Params", func() {
 		})
 	})
 	It("create route with query params", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name":    "route1",
 			"uri":     "/hello",
 			"methods": []string{"GET"},
-			"vars": []interface{}{
+			"vars": []any{
 				[]string{"arg_name", "==", "aaa"},
 			},
 			"upstream": upstream,
@@ -153,11 +153,11 @@ var _ = Describe("Route_Online_Debug_Route_With_Header_Params", func() {
 		})
 	})
 	It("create route with header params", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name":    "route1",
 			"uri":     "/hello",
 			"methods": []string{"GET"},
-			"vars": []interface{}{
+			"vars": []any{
 				[]string{"http_version", "==", "v2"},
 			},
 			"upstream": upstream,
@@ -193,7 +193,7 @@ var _ = Describe("Route_Online_Debug_Route_With_Header_Params", func() {
 		})
 	})
 	It("online debug route with header params(add Content-type to header params to create route)", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name":     "route2",
 			"status":   1,
 			"uri":      "/hello_",
@@ -281,7 +281,7 @@ var _ = Describe("Route_Online_Debug_Route_With_Body_Params", func() {
 		})
 	})
 	It("create route with method POST", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name":     "route1",
 			"uri":      "/hello",
 			"methods":  []string{"POST"},
@@ -352,11 +352,11 @@ var _ = Describe("Route_Online_Debug_Route_With_Basic_Auth", func() {
 		})
 	})
 	It("create route enable basic-auth plugin", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
-			"plugins": map[string]interface{}{
-				"basic-auth": map[string]interface{}{},
+			"plugins": map[string]any{
+				"basic-auth": map[string]any{},
 			},
 			"methods":  []string{"GET"},
 			"upstream": upstream,
@@ -478,11 +478,11 @@ var _ = Describe("Route_Online_Debug_Route_With_Key_Auth", func() {
 		})
 	})
 	It("create route enable key-auth plugin", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
-			"plugins": map[string]interface{}{
-				"key-auth": map[string]interface{}{},
+			"plugins": map[string]any{
+				"key-auth": map[string]any{},
 			},
 			"methods":  []string{"GET"},
 			"upstream": upstream,
@@ -601,11 +601,11 @@ var _ = Describe("Route_Online_Debug_Route_With_JWT_Auth", func() {
 		})
 	})
 	It("create route enable jwt-auth plugin", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name": "route1",
 			"uri":  "/hello",
-			"plugins": map[string]interface{}{
-				"jwt-auth": map[string]interface{}{},
+			"plugins": map[string]any{
+				"jwt-auth": map[string]any{},
 			},
 			"methods":  []string{"GET"},
 			"upstream": upstream,
@@ -653,7 +653,7 @@ var _ = Describe("Route_Online_Debug_Route_With_JWT_Auth", func() {
 	})
 	It("online debug with JWT-auth", func() {
 		jsonStr := `{"test":["test1"]}`
-		var _headerParams map[string]interface{}
+		var _headerParams map[string]any
 		err := json.Unmarshal([]byte(jsonStr), &_headerParams)
 		Expect(err).To(BeNil())
 		jwtToken := base.GetJwtToken("user-key")
@@ -735,7 +735,7 @@ var _ = Describe("Route_Online_Debug_Route_With_Files", func() {
 		})
 	})
 	It("create route enable basic-auth plugin", func() {
-		var routeBody map[string]interface{} = map[string]interface{}{
+		var routeBody map[string]any = map[string]any{
 			"name":     "route1",
 			"uri":      "/hello_",
 			"methods":  []string{"POST"},
@@ -763,7 +763,7 @@ var _ = Describe("Route_Online_Debug_Route_With_Files", func() {
 		headers := map[string]string{}
 
 		jsonStr := `{"test":["test1"]}`
-		var _headerParams map[string]interface{}
+		var _headerParams map[string]any
 		err = json.Unmarshal([]byte(jsonStr), &_headerParams)
 		Expect(err).To(BeNil())
 		l := []string{base.GetToken()}
@@ -803,11 +803,11 @@ var _ = Describe("Route_Online_Debug_Route_With_Files", func() {
 		Expect(err).To(BeNil())
 		defer resp.Body.Close()
 		respBody, _ := ioutil.ReadAll(resp.Body)
-		list := gjson.Get(string(respBody), "data.rows").Value().([]interface{})
+		list := gjson.Get(string(respBody), "data.rows").Value().([]any)
 
 		var tests []base.HttpTestCase
 		for _, item := range list {
-			route := item.(map[string]interface{})
+			route := item.(map[string]any)
 			tc := base.HttpTestCase{
 				Desc:         "route patch for update status(online)",
 				Object:       base.ManagerApiExpect(),
@@ -834,7 +834,7 @@ var _ = Describe("Route_Online_Debug_Route_With_Files", func() {
 
 		// delete test data
 		for _, item := range list {
-			route := item.(map[string]interface{})
+			route := item.(map[string]any)
 			tc := base.HttpTestCase{
 				Desc:         "delete route",
 				Object:       base.ManagerApiExpect(),

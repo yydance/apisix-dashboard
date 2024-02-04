@@ -47,10 +47,10 @@ type Pagination struct {
 
 type Interface interface {
 	Type() HubKey
-	Get(ctx context.Context, key string) (interface{}, error)
+	Get(ctx context.Context, key string) (any, error)
 	List(ctx context.Context, input ListInput) (*ListOutput, error)
-	Create(ctx context.Context, obj interface{}) (interface{}, error)
-	Update(ctx context.Context, obj interface{}, createIfNotExist bool) (interface{}, error)
+	Create(ctx context.Context, obj any) (any, error)
+	Update(ctx context.Context, obj any, createIfNotExist bool) (any, error)
 	BatchDelete(ctx context.Context, keys []string) error
 }
 
@@ -68,8 +68,8 @@ type GenericStore struct {
 type GenericStoreOption struct {
 	BasePath   string
 	ObjType    reflect.Type
-	KeyFunc    func(obj interface{}) string
-	StockCheck func(obj interface{}, stockObj interface{}) error
+	KeyFunc    func(obj any) string
+	StockCheck func(obj any, stockObj any) error
 	Validator  Validator
 	HubKey     HubKey
 }
@@ -122,7 +122,7 @@ func (s *GenericStore) Type() HubKey {
 	return s.opt.HubKey
 }
 
-func (s *GenericStore) Get(_ context.Context, key string) (interface{}, error) {
+func (s *GenericStore) Get(_ context.Context, key string) (any, error) {
 	ret, ok := s.cache.Load(key)
 	if !ok {
 		log.Warnf("data not found by key: %s", key)
@@ -132,25 +132,25 @@ func (s *GenericStore) Get(_ context.Context, key string) (interface{}, error) {
 }
 
 type ListInput struct {
-	Predicate func(obj interface{}) bool
-	Format    func(obj interface{}) interface{}
+	Predicate func(obj any) bool
+	Format    func(obj any) any
 	PageSize  int
 	// start from 1
 	PageNumber int
-	Less       func(i, j interface{}) bool
+	Less       func(i, j any) bool
 }
 
 type ListOutput struct {
-	Rows      []interface{} `json:"rows"`
-	TotalSize int           `json:"total_size"`
+	Rows      []any `json:"rows"`
+	TotalSize int   `json:"total_size"`
 }
 
 // NewListOutput returns JSON marshalling safe struct pointer for empty slice
 func NewListOutput() *ListOutput {
-	return &ListOutput{Rows: make([]interface{}, 0)}
+	return &ListOutput{Rows: make([]any, 0)}
 }
 
-var defLessFunc = func(i, j interface{}) bool {
+var defLessFunc = func(i, j any) bool {
 	iBase := i.(entity.GetBaseInfo).GetBaseInfo()
 	jBase := j.(entity.GetBaseInfo).GetBaseInfo()
 	if iBase.CreateTime != jBase.CreateTime {
@@ -165,8 +165,8 @@ var defLessFunc = func(i, j interface{}) bool {
 }
 
 func (s *GenericStore) List(_ context.Context, input ListInput) (*ListOutput, error) {
-	var ret []interface{}
-	s.cache.Range(func(key, value interface{}) bool {
+	var ret []any
+	s.cache.Range(func(key, value any) bool {
 		if input.Predicate != nil && !input.Predicate(value) {
 			return true
 		}
@@ -179,7 +179,7 @@ func (s *GenericStore) List(_ context.Context, input ListInput) (*ListOutput, er
 
 	//should return an empty array not a null for client
 	if ret == nil {
-		ret = []interface{}{}
+		ret = []any{}
 	}
 
 	output := &ListOutput{
@@ -197,7 +197,7 @@ func (s *GenericStore) List(_ context.Context, input ListInput) (*ListOutput, er
 	if input.PageSize > 0 && input.PageNumber > 0 {
 		skipCount := (input.PageNumber - 1) * input.PageSize
 		if skipCount > output.TotalSize {
-			output.Rows = []interface{}{}
+			output.Rows = []any{}
 			return output, nil
 		}
 
@@ -212,13 +212,13 @@ func (s *GenericStore) List(_ context.Context, input ListInput) (*ListOutput, er
 	return output, nil
 }
 
-func (s *GenericStore) Range(_ context.Context, f func(key string, obj interface{}) bool) {
-	s.cache.Range(func(key, value interface{}) bool {
+func (s *GenericStore) Range(_ context.Context, f func(key string, obj any) bool) {
+	s.cache.Range(func(key, value any) bool {
 		return f(key.(string), value)
 	})
 }
 
-func (s *GenericStore) ingestValidate(obj interface{}) (err error) {
+func (s *GenericStore) ingestValidate(obj any) (err error) {
 	if s.opt.Validator != nil {
 		if err := s.opt.Validator.Validate(obj); err != nil {
 			log.Errorf("data validate failed: %s, %v", err, obj)
@@ -227,7 +227,7 @@ func (s *GenericStore) ingestValidate(obj interface{}) (err error) {
 	}
 
 	if s.opt.StockCheck != nil {
-		s.cache.Range(func(key, value interface{}) bool {
+		s.cache.Range(func(key, value any) bool {
 			if err = s.opt.StockCheck(obj, value); err != nil {
 				return false
 			}
@@ -237,7 +237,7 @@ func (s *GenericStore) ingestValidate(obj interface{}) (err error) {
 	return err
 }
 
-func (s *GenericStore) CreateCheck(obj interface{}) ([]byte, error) {
+func (s *GenericStore) CreateCheck(obj any) ([]byte, error) {
 
 	if setter, ok := obj.(entity.GetBaseInfo); ok {
 		info := setter.GetBaseInfo()
@@ -267,7 +267,7 @@ func (s *GenericStore) CreateCheck(obj interface{}) ([]byte, error) {
 	return bytes, nil
 }
 
-func (s *GenericStore) Create(ctx context.Context, obj interface{}) (interface{}, error) {
+func (s *GenericStore) Create(ctx context.Context, obj any) (any, error) {
 	if setter, ok := obj.(entity.GetBaseInfo); ok {
 		info := setter.GetBaseInfo()
 		info.Creating()
@@ -285,7 +285,7 @@ func (s *GenericStore) Create(ctx context.Context, obj interface{}) (interface{}
 	return obj, nil
 }
 
-func (s *GenericStore) Update(ctx context.Context, obj interface{}, createIfNotExist bool) (interface{}, error) {
+func (s *GenericStore) Update(ctx context.Context, obj any, createIfNotExist bool) (any, error) {
 	if err := s.ingestValidate(obj); err != nil {
 		return nil, err
 	}
@@ -397,7 +397,7 @@ func (s *GenericStore) Close() error {
 	return nil
 }
 
-func (s *GenericStore) StringToObjPtr(str, key string) (interface{}, error) {
+func (s *GenericStore) StringToObjPtr(str, key string) (any, error) {
 	objPtr := reflect.New(s.opt.ObjType)
 	ret := objPtr.Interface()
 	err := json.Unmarshal([]byte(str), ret)
@@ -414,7 +414,7 @@ func (s *GenericStore) StringToObjPtr(str, key string) (interface{}, error) {
 	return ret, nil
 }
 
-func (s *GenericStore) GetObjStorageKey(obj interface{}) string {
+func (s *GenericStore) GetObjStorageKey(obj any) string {
 	return s.GetStorageKey(s.opt.KeyFunc(obj))
 }
 

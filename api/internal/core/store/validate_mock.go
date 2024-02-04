@@ -24,10 +24,10 @@ type MockValidator struct {
 }
 
 // Validate provides a mock function with given fields: obj
-func (_m *MockValidator) Validate(obj interface{}) error {
+func (_m *MockValidator) Validate(obj any) error {
 	ret := _m.Called(obj)
 
-	if rf, ok := ret.Get(0).(func(interface{}) error); ok {
+	if rf, ok := ret.Get(0).(func(any) error); ok {
 		return rf(obj)
 	}
 

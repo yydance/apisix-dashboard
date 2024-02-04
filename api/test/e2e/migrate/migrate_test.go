@@ -36,14 +36,14 @@ const (
 )
 
 type AllData struct {
-	Consumers     []interface{}
-	Routes        []interface{}
-	Services      []interface{}
-	SSLs          []interface{}
-	Upstreams     []interface{}
-	Scripts       []interface{}
-	GlobalPlugins []interface{}
-	PluginConfigs []interface{}
+	Consumers     []any
+	Routes        []any
+	Services      []any
+	SSLs          []any
+	Upstreams     []any
+	Scripts       []any
+	GlobalPlugins []any
+	PluginConfigs []any
 }
 
 type response struct {

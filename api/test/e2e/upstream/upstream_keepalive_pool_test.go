@@ -29,8 +29,8 @@ import (
 // just test for schema check
 var _ = Describe("Upstream keepalive pool", func() {
 	It("create upstream with keepalive pool", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -38,7 +38,7 @@ var _ = Describe("Upstream keepalive pool", func() {
 			},
 		}
 		createUpstreamBody["type"] = "roundrobin"
-		createUpstreamBody["keepalive_pool"] = map[string]interface{}{
+		createUpstreamBody["keepalive_pool"] = map[string]any{
 			"size":         320,
 			"requests":     1000,
 			"idle_timeout": 60,

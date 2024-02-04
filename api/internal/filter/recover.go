@@ -54,7 +54,7 @@ func RecoverHandler() gin.HandlerFunc {
 	}
 }
 
-func WrapGo(f func(...interface{}), args ...interface{}) {
+func WrapGo(f func(...any), args ...any) {
 	defer func() {
 		if err := recover(); err != nil {
 			stack := stack(3)

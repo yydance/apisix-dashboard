@@ -45,7 +45,7 @@ func NewHandler() (handler.RouteRegister, error) {
 }
 
 type ProtocolSupport interface {
-	RequestForwarding(c droplet.Context) (interface{}, error)
+	RequestForwarding(c droplet.Context) (any, error)
 }
 
 func (h *Handler) ApplyRoute(r *gin.Engine) {
@@ -63,13 +63,13 @@ type DebugOnlineInput struct {
 }
 
 type Result struct {
-	Code    int         `json:"code,omitempty"`
-	Header  interface{} `json:"header,omitempty"`
-	Message string      `json:"message,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
+	Code    int    `json:"code,omitempty"`
+	Header  any    `json:"header,omitempty"`
+	Message string `json:"message,omitempty"`
+	Data    any    `json:"data,omitempty"`
 }
 
-func (h *Handler) DebugRequestForwarding(c droplet.Context) (interface{}, error) {
+func (h *Handler) DebugRequestForwarding(c droplet.Context) (any, error) {
 	//TODO: other Protocols, e.g: grpc, websocket
 	input := c.Input().(*DebugOnlineInput)
 	protocol := input.RequestProtocol
@@ -92,7 +92,7 @@ func (h *Handler) DebugRequestForwarding(c droplet.Context) (interface{}, error)
 type HTTPProtocolSupport struct {
 }
 
-func (h *HTTPProtocolSupport) RequestForwarding(c droplet.Context) (interface{}, error) {
+func (h *HTTPProtocolSupport) RequestForwarding(c droplet.Context) (any, error) {
 	input := c.Input().(*DebugOnlineInput)
 	url := input.URL
 	method := input.Method
@@ -154,7 +154,7 @@ func (h *HTTPProtocolSupport) RequestForwarding(c droplet.Context) (interface{},
 	if err != nil {
 		return &data.SpecCodeResponse{StatusCode: http.StatusInternalServerError}, err
 	}
-	returnData := make(map[string]interface{})
+	returnData := make(map[string]any)
 	result := &Result{}
 	err = json.Unmarshal(_body, &returnData)
 	if err != nil {

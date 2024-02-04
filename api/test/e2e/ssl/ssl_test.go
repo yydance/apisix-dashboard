@@ -51,7 +51,7 @@ var _ = Describe("SSL Basic", func() {
 	apisixKey, err = ioutil.ReadFile("../../certs/apisix.key")
 	Expect(err).To(BeNil())
 
-	validBody, err = json.Marshal(map[string]interface{}{
+	validBody, err = json.Marshal(map[string]any{
 		"id":   "1",
 		"cert": string(testCert),
 		"key":  string(testKey),
@@ -62,7 +62,7 @@ var _ = Describe("SSL Basic", func() {
 		},
 	})
 	Expect(err).To(BeNil())
-	validBody2, err = json.Marshal(map[string]interface{}{
+	validBody2, err = json.Marshal(map[string]any{
 		"id":   "1",
 		"cert": string(testCert),
 		"key":  string(testKey),
@@ -81,12 +81,12 @@ var _ = Describe("SSL Basic", func() {
 	})
 	Expect(err).To(BeNil())
 
-	tempBody := map[string]interface{}{
+	tempBody := map[string]any{
 		"name":  "route1",
 		"uri":   "/hello_",
 		"hosts": []string{"test2.com", "*.test2.com"},
-		"upstream": map[string]interface{}{
-			"nodes": []map[string]interface{}{
+		"upstream": map[string]any{
+			"nodes": []map[string]any{
 				{
 					"host":   base.UpstreamIp,
 					"port":   1980,

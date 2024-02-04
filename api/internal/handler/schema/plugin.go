@@ -44,18 +44,18 @@ type ListInput struct {
 	All bool `auto_read:"all,query"`
 }
 
-func (h *Handler) Plugins(c droplet.Context) (interface{}, error) {
+func (h *Handler) Plugins(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	plugins := conf.Schema.Get("plugins")
 	if input.All {
-		var res []map[string]interface{}
-		list := plugins.Value().(map[string]interface{})
+		var res []map[string]any
+		list := plugins.Value().(map[string]any)
 		for name, schemaConfig := range list {
 			if enable, ok := conf.Plugins[name]; !ok || !enable {
 				continue
 			}
-			plugin := schemaConfig.(map[string]interface{})
+			plugin := schemaConfig.(map[string]any)
 			plugin["name"] = name
 			if _, ok := plugin["type"]; !ok {
 				plugin["type"] = "other"

@@ -51,7 +51,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.serverInfoStore.Get(c.Context(), input.ID)
@@ -67,11 +67,11 @@ type ListInput struct {
 	Hostname string `auto_read:"hostname,query"`
 }
 
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.serverInfoStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.Hostname != "" {
 				return strings.Contains(obj.(*entity.ServerInfo).Hostname, input.Hostname)
 			}

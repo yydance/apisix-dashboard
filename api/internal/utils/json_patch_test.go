@@ -24,7 +24,7 @@ import (
 )
 
 func compareJSON(a, b string) bool {
-	var objA, objB interface{}
+	var objA, objB any
 	json.Unmarshal([]byte(a), &objA)
 	json.Unmarshal([]byte(b), &objB)
 

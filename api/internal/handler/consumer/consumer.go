@@ -58,7 +58,7 @@ type GetInput struct {
 	Username string `auto_read:"username,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.consumerStore.Get(c.Context(), input.Username)
@@ -81,43 +81,45 @@ type ListInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
-// - name: username
-//   in: query
-//   description: username of consumer
-//   required: false
-//   type: string
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//   - name: username
+//     in: query
+//     description: username of consumer
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/consumer"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/consumer"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.consumerStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.Username != "" {
 				return strings.Contains(obj.(*entity.Consumer).Username, input.Username)
 			}
 			return true
 		},
-		Less: func(i, j interface{}) bool {
+		Less: func(i, j any) bool {
 			iBase := i.(*entity.Consumer)
 			jBase := j.(*entity.Consumer)
 			if iBase.CreateTime != jBase.CreateTime {
@@ -143,7 +145,7 @@ type SetInput struct {
 	Username string `auto_read:"username,path"`
 }
 
-func (h *Handler) Set(c droplet.Context) (interface{}, error) {
+func (h *Handler) Set(c droplet.Context) (any, error) {
 	input := c.Input().(*SetInput)
 	if input.Username != "" {
 		input.Consumer.Username = input.Username
@@ -168,9 +170,9 @@ func (h *Handler) Set(c droplet.Context) (interface{}, error) {
 	return ret, nil
 }
 
-func ensurePluginsDefValue(plugins map[string]interface{}) {
+func ensurePluginsDefValue(plugins map[string]any) {
 	if plugins["jwt-auth"] != nil {
-		jwtAuth, ok := plugins["jwt-auth"].(map[string]interface{})
+		jwtAuth, ok := plugins["jwt-auth"].(map[string]any)
 		if ok && jwtAuth["exp"] == nil {
 			jwtAuth["exp"] = 86400
 		}
@@ -181,7 +183,7 @@ type BatchDeleteInput struct {
 	UserNames string `auto_read:"usernames,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDeleteInput)
 
 	if err := h.consumerStore.BatchDelete(c.Context(), strings.Split(input.UserNames, ",")); err != nil {

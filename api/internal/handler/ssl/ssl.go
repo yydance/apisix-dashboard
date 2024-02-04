@@ -50,7 +50,7 @@ func NewHandler() (handler.RouteRegister, error) {
 	}, nil
 }
 
-func checkSniExists(rows []interface{}, sni string) bool {
+func checkSniExists(rows []any, sni string) bool {
 	for _, item := range rows {
 		ssl := item.(*entity.SSL)
 
@@ -108,7 +108,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	ret, err := h.sslStore.Get(c.Context(), input.ID)
@@ -141,37 +141,39 @@ type ListInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
-// - name: sni
-//   in: query
-//   description: sni of SSL
-//   required: false
-//   type: string
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//   - name: sni
+//     in: query
+//     description: sni of SSL
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/ssl"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/ssl"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.sslStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.SNI != "" {
 				if strings.Contains(obj.(*entity.SSL).Sni, input.SNI) {
 					return true
@@ -194,7 +196,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	}
 
 	//format respond
-	var list []interface{}
+	var list []any
 	for _, item := range ret.Rows {
 		ssl := &entity.SSL{}
 		_ = utils.ObjectClone(item, ssl)
@@ -203,14 +205,14 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 		list = append(list, ssl)
 	}
 	if list == nil {
-		list = []interface{}{}
+		list = []any{}
 	}
 	ret.Rows = list
 
 	return ret, nil
 }
 
-func (h *Handler) Create(c droplet.Context) (interface{}, error) {
+func (h *Handler) Create(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.SSL)
 	ssl, err := ParseCert(input.Cert, input.Key)
 	if err != nil {
@@ -238,7 +240,7 @@ type UpdateInput struct {
 	entity.SSL
 }
 
-func (h *Handler) Update(c droplet.Context) (interface{}, error) {
+func (h *Handler) Update(c droplet.Context) (any, error) {
 	input := c.Input().(*UpdateInput)
 
 	// check if ID in body is equal ID in path
@@ -279,7 +281,7 @@ type PatchInput struct {
 	Body    []byte `auto_read:"@body"`
 }
 
-func (h *Handler) Patch(c droplet.Context) (interface{}, error) {
+func (h *Handler) Patch(c droplet.Context) (any, error) {
 	input := c.Input().(*PatchInput)
 	reqBody := input.Body
 	id := input.ID
@@ -317,7 +319,7 @@ type BatchDelete struct {
 	Ids string `auto_read:"ids,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDelete)
 
 	if err := h.sslStore.BatchDelete(c.Context(), strings.Split(input.Ids, ",")); err != nil {
@@ -398,26 +400,28 @@ func ParseCert(crt, key string) (*entity.SSL, error) {
 // produces:
 // - application/json
 // parameters:
-// - name: cert
-//   in: body
-//   description: cert of SSL
-//   required: true
-//   type: string
-// - name: key
-//   in: body
-//   description: key of SSL
-//   required: true
-//   type: string
+//   - name: cert
+//     in: body
+//     description: cert of SSL
+//     required: true
+//     type: string
+//   - name: key
+//     in: body
+//     description: key of SSL
+//     required: true
+//     type: string
+//
 // responses:
-//   '0':
-//     description: SSL verify passed
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) Validate(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: SSL verify passed
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) Validate(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.SSL)
 	ssl, err := ParseCert(input.Cert, input.Key)
 	if err != nil {
@@ -453,23 +457,25 @@ type ExistCheckInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: hosts
-//   in: body
-//   description: hosts of Route
-//   required: true
-//   type: array
+//   - name: hosts
+//     in: body
+//     description: hosts of Route
+//     required: true
+//     type: array
 //     items:
 //     type: string
+//
 // responses:
-//   '0':
-//     description: SSL exists
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) Exist(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: SSL exists
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) Exist(c droplet.Context) (any, error) {
 	input := c.Input().(*ExistCheckInput)
 	if len(input.Hosts) == 0 {
 		return &data.SpecCodeResponse{StatusCode: http.StatusBadRequest},

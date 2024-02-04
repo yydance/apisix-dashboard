@@ -72,7 +72,7 @@ type GetInput struct {
 	ID string `auto_read:"id,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 
 	r, err := h.serviceStore.Get(c.Context(), input.ID)
@@ -90,7 +90,7 @@ func (h *Handler) Get(c droplet.Context) (interface{}, error) {
 
 type ListInput struct {
 	Name string `auto_read:"name,query"`
-	ID string `auto_read:"id,query"`
+	ID   string `auto_read:"id,query"`
 	Desc string `auto_read:"desc,query"`
 	store.Pagination
 }
@@ -103,37 +103,39 @@ type ListInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: page
-//   in: query
-//   description: page number
-//   required: false
-//   type: integer
-// - name: page_size
-//   in: query
-//   description: page size
-//   required: false
-//   type: integer
-// - name: name
-//   in: query
-//   description: name of service
-//   required: false
-//   type: string
+//   - name: page
+//     in: query
+//     description: page number
+//     required: false
+//     type: integer
+//   - name: page_size
+//     in: query
+//     description: page size
+//     required: false
+//     type: integer
+//   - name: name
+//     in: query
+//     description: name of service
+//     required: false
+//     type: string
+//
 // responses:
-//   '0':
-//     description: list response
-//     schema:
-//       type: array
-//       items:
-//         "$ref": "#/definitions/service"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) List(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: list response
+//	  schema:
+//	    type: array
+//	    items:
+//	      "$ref": "#/definitions/service"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) List(c droplet.Context) (any, error) {
 	input := c.Input().(*ListInput)
 
 	ret, err := h.serviceStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			if input.Name != "" {
 				return strings.Contains(obj.(*entity.Service).Name, input.Name)
 			}
@@ -147,7 +149,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 			}
 			return true
 		},
-		Format: func(obj interface{}) interface{} {
+		Format: func(obj any) any {
 			service := obj.(*entity.Service)
 			if service.Upstream != nil && service.Upstream.Nodes != nil {
 				service.Upstream.Nodes = entity.NodesFormat(service.Upstream.Nodes)
@@ -164,7 +166,7 @@ func (h *Handler) List(c droplet.Context) (interface{}, error) {
 	return ret, nil
 }
 
-func (h *Handler) Create(c droplet.Context) (interface{}, error) {
+func (h *Handler) Create(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.Service)
 
 	if input.UpstreamID != nil {
@@ -199,7 +201,7 @@ type UpdateInput struct {
 	entity.Service
 }
 
-func (h *Handler) Update(c droplet.Context) (interface{}, error) {
+func (h *Handler) Update(c droplet.Context) (any, error) {
 	input := c.Input().(*UpdateInput)
 
 	// check if ID in body is equal ID in path
@@ -242,7 +244,7 @@ type BatchDelete struct {
 	IDs string `auto_read:"ids,path"`
 }
 
-func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
+func (h *Handler) BatchDelete(c droplet.Context) (any, error) {
 	input := c.Input().(*BatchDelete)
 	ids := strings.Split(input.IDs, ",")
 	mp := make(map[string]struct{})
@@ -251,7 +253,7 @@ func (h *Handler) BatchDelete(c droplet.Context) (interface{}, error) {
 	}
 
 	ret, err := h.routeStore.List(c.Context(), store.ListInput{
-		Predicate: func(obj interface{}) bool {
+		Predicate: func(obj any) bool {
 			route := obj.(*entity.Route)
 			if _, exist := mp[utils.InterfaceToString(route.ServiceID)]; exist {
 				return true
@@ -284,7 +286,7 @@ type PatchInput struct {
 	Body    []byte `auto_read:"@body"`
 }
 
-func (h *Handler) Patch(c droplet.Context) (interface{}, error) {
+func (h *Handler) Patch(c droplet.Context) (any, error) {
 	input := c.Input().(*PatchInput)
 	reqBody := input.Body
 	ID := input.ID

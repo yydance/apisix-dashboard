@@ -30,8 +30,8 @@ import (
 	"github.com/apisix/manager-api/test/e2e/base"
 )
 
-var createUpstreamBody map[string]interface{} = map[string]interface{}{
-	"nodes": []map[string]interface{}{
+var createUpstreamBody map[string]any = map[string]any{
+	"nodes": []map[string]any{
 		{
 			"host":   base.UpstreamIp,
 			"port":   1980,

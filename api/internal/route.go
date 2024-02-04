@@ -61,6 +61,9 @@ func SetUpRouter() *gin.Engine {
 	r.Use(filter.RequestLogHandler(logger), filter.IPFilter(), filter.InvalidRequest())
 
 	// authenticate
+	if conf.LdapEnabled {
+		r.Use(filter.Ldap())
+	}
 	if conf.OidcEnabled {
 		r.Use(filter.Oidc())
 	}

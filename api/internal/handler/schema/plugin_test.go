@@ -46,7 +46,7 @@ func TestPlugin(t *testing.T) {
 	ctx.SetInput(listInput)
 	list, err = handler.Plugins(ctx)
 	assert.Nil(t, err)
-	plugins := list.([]map[string]interface{})
+	plugins := list.([]map[string]any)
 	var authPlugins []string
 	var basicAuthConsumerSchema string
 	for _, plugin := range plugins {

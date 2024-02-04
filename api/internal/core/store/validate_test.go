@@ -35,7 +35,7 @@ type TestObj struct {
 func TestJsonSchemaValidator_Validate(t *testing.T) {
 	tests := []struct {
 		givePath        string
-		giveObj         interface{}
+		giveObj         any
 		wantNewErr      error
 		wantValidateErr []error
 	}{
@@ -436,7 +436,7 @@ func TestAPISIXSchemaValidator_SystemConfig(t *testing.T) {
 	tests := []struct {
 		name            string
 		givePath        string
-		giveObj         interface{}
+		giveObj         any
 		wantNewErr      bool
 		wantValidateErr bool
 		wantErrMessage  string
@@ -451,7 +451,7 @@ func TestAPISIXSchemaValidator_SystemConfig(t *testing.T) {
 			name:     "invalid configName (configName is empty)",
 			givePath: "main.system_config",
 			giveObj: &entity.SystemConfig{
-				Payload: map[string]interface{}{"a": 1},
+				Payload: map[string]any{"a": 1},
 			},
 			wantValidateErr: true,
 			wantErrMessage:  "schema validate failed: config_name: String length must be greater than or equal to 1\nconfig_name: Does not match pattern '^[a-zA-Z0-9_]+$'",
@@ -461,7 +461,7 @@ func TestAPISIXSchemaValidator_SystemConfig(t *testing.T) {
 			givePath: "main.system_config",
 			giveObj: &entity.SystemConfig{
 				ConfigName: "1@2",
-				Payload:    map[string]interface{}{"a": 1},
+				Payload:    map[string]any{"a": 1},
 			},
 			wantValidateErr: true,
 			wantErrMessage:  "schema validate failed: config_name: Does not match pattern '^[a-zA-Z0-9_]+$'",
@@ -480,7 +480,7 @@ func TestAPISIXSchemaValidator_SystemConfig(t *testing.T) {
 			givePath: "main.system_config",
 			giveObj: &entity.SystemConfig{
 				ConfigName: "aaa",
-				Payload:    map[string]interface{}{"a": 1},
+				Payload:    map[string]any{"a": 1},
 			},
 		},
 	}

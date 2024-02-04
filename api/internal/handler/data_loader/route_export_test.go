@@ -1102,7 +1102,8 @@ func TestExportRoutesCreateByLabel(t *testing.T) {
 }
 
 // 10.Create a service with label data and a route without label data, and export the route.
-//  Label is the data of the service
+//
+//	Label is the data of the service
 func TestExportRoutesCreateByLabel2(t *testing.T) {
 	input := &ExportInput{IDs: "1"}
 	s := `{
@@ -1575,7 +1576,7 @@ func TestExportRoutesAll(t *testing.T) {
 	mStore.On("List", mock.Anything).Run(func(args mock.Arguments) {
 		getCalled = true
 	}).Return(func(input store.ListInput) *store.ListOutput {
-		var returnData []interface{}
+		var returnData []any
 		for _, c := range routes {
 			returnData = append(returnData, c)
 		}
@@ -1598,7 +1599,7 @@ func TestExportRoutesAll(t *testing.T) {
 	assert.True(t, getCalled)
 }
 
-//15.Create service according to upstream1 ID
+// 15.Create service according to upstream1 ID
 // Create route according to upstream2 ID and service ID
 func TestExportRoutesCreateByUpstreamIDAndServiceID2(t *testing.T) {
 	input := &ExportInput{IDs: "1"}
@@ -1731,7 +1732,7 @@ func TestExportRoutesCreateByUpstreamIDAndServiceID2(t *testing.T) {
 	mStoreUpstream.On("List", mock.Anything).Run(func(args mock.Arguments) {
 		getCalled = true
 	}).Return(func(input store.ListInput) *store.ListOutput {
-		var returnData []interface{}
+		var returnData []any
 		for _, c := range upstreams {
 			returnData = append(returnData, c)
 		}
@@ -1900,7 +1901,7 @@ func TestExportRoutesSameURI(t *testing.T) {
 	mStore.On("List", mock.Anything).Run(func(args mock.Arguments) {
 		getCalled = true
 	}).Return(func(input store.ListInput) *store.ListOutput {
-		var returnData []interface{}
+		var returnData []any
 		for _, c := range routes {
 			returnData = append(returnData, c)
 		}
@@ -1946,7 +1947,7 @@ func TestExportAllRoutesDataEmpty(t *testing.T) {
 	mStore.On("List", mock.Anything).Run(func(args mock.Arguments) {
 		getCalled = true
 	}).Return(func(input store.ListInput) *store.ListOutput {
-		var returnData []interface{}
+		var returnData []any
 		return &store.ListOutput{
 			Rows:      returnData,
 			TotalSize: 0,

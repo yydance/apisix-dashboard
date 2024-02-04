@@ -55,7 +55,7 @@ type GetInput struct {
 	ConfigName string `auto_read:"config_name,path" validate:"required"`
 }
 
-func (h *Handler) Get(c droplet.Context) (interface{}, error) {
+func (h *Handler) Get(c droplet.Context) (any, error) {
 	input := c.Input().(*GetInput)
 	r, err := h.systemConfig.Get(c.Context(), input.ConfigName)
 
@@ -66,7 +66,7 @@ func (h *Handler) Get(c droplet.Context) (interface{}, error) {
 	return r, nil
 }
 
-func (h *Handler) Post(c droplet.Context) (interface{}, error) {
+func (h *Handler) Post(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.SystemConfig)
 	input.CreateTime = time.Now().Unix()
 	input.UpdateTime = time.Now().Unix()
@@ -80,7 +80,7 @@ func (h *Handler) Post(c droplet.Context) (interface{}, error) {
 	return res, nil
 }
 
-func (h *Handler) Put(c droplet.Context) (interface{}, error) {
+func (h *Handler) Put(c droplet.Context) (any, error) {
 	input := c.Input().(*entity.SystemConfig)
 	input.UpdateTime = time.Now().Unix()
 
@@ -97,7 +97,7 @@ type DeleteInput struct {
 	ConfigName string `auto_read:"config_name,path" validate:"required"`
 }
 
-func (h *Handler) Delete(c droplet.Context) (interface{}, error) {
+func (h *Handler) Delete(c droplet.Context) (any, error) {
 	input := c.Input().(*DeleteInput)
 	err := h.systemConfig.BatchDelete(c.Context(), []string{input.ConfigName})
 

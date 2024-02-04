@@ -41,7 +41,7 @@ func TestService_Get(t *testing.T) {
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "normal",
@@ -51,8 +51,8 @@ func TestService_Get(t *testing.T) {
 				BaseInfo: entity.BaseInfo{
 					ID: "s1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         2,
 						"time_window":   60,
 						"rejected_code": 503,
@@ -64,8 +64,8 @@ func TestService_Get(t *testing.T) {
 				BaseInfo: entity.BaseInfo{
 					ID: "s1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         2,
 						"time_window":   60,
 						"rejected_code": 503,
@@ -114,7 +114,7 @@ func TestService_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all service",
@@ -135,7 +135,7 @@ func TestService_List(t *testing.T) {
 				{Name: "service_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Service{Name: "s1"},
 					&entity.Service{Name: "s2"},
 					&entity.Service{Name: "test_service"},
@@ -164,7 +164,7 @@ func TestService_List(t *testing.T) {
 				{BaseInfo: entity.BaseInfo{CreateTime: 1609376664}, Name: "service_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Service{BaseInfo: entity.BaseInfo{CreateTime: 1609376663}, Name: "test_service"},
 					&entity.Service{BaseInfo: entity.BaseInfo{CreateTime: 1609376664}, Name: "service_test"},
 				},
@@ -191,7 +191,7 @@ func TestService_List(t *testing.T) {
 				{Name: "service_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Service{Name: "s1"},
 				},
 				TotalSize: 1,
@@ -213,8 +213,8 @@ func TestService_List(t *testing.T) {
 				{
 					Name: "s1",
 					Upstream: &entity.UpstreamDef{
-						Nodes: []interface{}{
-							map[string]interface{}{
+						Nodes: []any{
+							map[string]any{
 								"host":     "39.97.63.215",
 								"port":     float64(80),
 								"weight":   float64(1),
@@ -228,7 +228,7 @@ func TestService_List(t *testing.T) {
 				{Name: "service_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Service{Name: "s1", Upstream: &entity.UpstreamDef{
 						Nodes: []*entity.Node{
 							{
@@ -258,7 +258,7 @@ func TestService_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.giveData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -291,15 +291,15 @@ func TestService_Create(t *testing.T) {
 		caseDesc      string
 		getCalled     bool
 		giveInput     *entity.Service
-		giveRet       interface{}
+		giveRet       any
 		giveErr       error
 		wantInput     *entity.Service
 		wantErr       error
-		wantRet       interface{}
+		wantRet       any
 		upstreamInput string
-		upstreamRet   interface{}
-		upstreamErr   interface{}
-		nameExistRet  []interface{}
+		upstreamRet   any
+		upstreamErr   any
+		nameExistRet  []any
 	}{
 		{
 			caseDesc:  "create success",
@@ -423,14 +423,14 @@ func TestService_Update(t *testing.T) {
 		getCalled     bool
 		giveInput     *UpdateInput
 		giveErr       error
-		giveRet       interface{}
+		giveRet       any
 		wantInput     *entity.Service
 		wantErr       error
-		wantRet       interface{}
+		wantRet       any
 		upstreamInput string
-		upstreamRet   interface{}
-		upstreamErr   interface{}
-		nameExistRet  []interface{}
+		upstreamRet   any
+		upstreamErr   any
+		nameExistRet  []any
 	}{
 		{
 			caseDesc:  "create success",
@@ -593,8 +593,8 @@ func TestService_Patch(t *testing.T) {
 		Labels: map[string]string{
 			"version": "v1",
 		},
-		Plugins: map[string]interface{}{
-			"limit-count": map[string]interface{}{
+		Plugins: map[string]any{
+			"limit-count": map[string]any{
 				"count":         2,
 				"time_window":   60,
 				"rejected_code": 503,
@@ -607,10 +607,10 @@ func TestService_Patch(t *testing.T) {
 		caseDesc     string
 		giveInput    *PatchInput
 		giveErr      error
-		giveRet      interface{}
+		giveRet      any
 		wantInput    *entity.Service
 		wantErr      error
-		wantRet      interface{}
+		wantRet      any
 		serviceInput string
 		serviceRet   *entity.Service
 		serviceErr   error
@@ -655,14 +655,14 @@ func TestService_Patch(t *testing.T) {
 					"version": "v1",
 					"build":   "16",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(504),
 						"key":           "remote_addr",
 					},
-					"key-auth": map[string]interface{}{
+					"key-auth": map[string]any{
 						"key": "auth-one",
 					},
 				},
@@ -699,8 +699,8 @@ func TestService_Patch(t *testing.T) {
 					"version": "v1",
 					"build":   "16",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -726,15 +726,15 @@ func TestService_Patch(t *testing.T) {
 					UpdateTime: 1609340491,
 				},
 				Name: "exist_service",
-				UpstreamID: map[string]interface{}{
+				UpstreamID: map[string]any{
 					"upstream_id": "u3",
 				},
 				EnableWebsocket: false,
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -765,8 +765,8 @@ func TestService_Patch(t *testing.T) {
 					"version": "v3",
 				},
 				UpstreamID: "u1",
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -827,7 +827,7 @@ func TestServices_Delete(t *testing.T) {
 		giveErr       error
 		wantInput     []string
 		wantErr       error
-		wantRet       interface{}
+		wantRet       any
 		routeMockData []*entity.Route
 		routeMockErr  error
 		getCalled     bool
@@ -911,7 +911,7 @@ func TestServices_Delete(t *testing.T) {
 
 			routeStore := &store.MockInterface{}
 			routeStore.On("List", mock.Anything).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.routeMockData {
 					if input.Predicate(c) {
 						if input.Format == nil {

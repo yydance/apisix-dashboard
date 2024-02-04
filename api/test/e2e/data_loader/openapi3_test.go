@@ -267,8 +267,8 @@ var _ = Describe("OpenAPI 3", func() {
 			}
 		}),
 		Entry("Modify upstream", func() {
-			body := make(map[string]interface{})
-			body["nodes"] = []map[string]interface{}{
+			body := make(map[string]any)
+			body["nodes"] = []map[string]any{
 				{
 					"host":   "httpbin.org",
 					"port":   80,
@@ -297,7 +297,7 @@ var _ = Describe("OpenAPI 3", func() {
 			Expect(r.Get("code").Uint()).To(Equal(uint64(0)))
 			id := r.Get("data").Get("rows").Array()[0].Get("id").String()
 
-			body := make(map[string]interface{})
+			body := make(map[string]any)
 			body["status"] = 1
 			_body, err := json.Marshal(body)
 			Expect(err).To(BeNil())

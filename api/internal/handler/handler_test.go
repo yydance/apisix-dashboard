@@ -47,7 +47,7 @@ func TestIDCompare(t *testing.T) {
 	// init
 	cases := []struct {
 		idOnPath, desc string
-		idOnBody       interface{}
+		idOnBody       any
 		wantError      error
 	}{
 		{
@@ -93,11 +93,11 @@ func TestNameExistCheck(t *testing.T) {
 	tests := []struct {
 		resource string
 		name     string
-		id       interface{}
+		id       any
 		mockErr  error
-		mockRet  []interface{}
+		mockRet  []any
 		wantErr  error
-		wantRet  interface{}
+		wantRet  any
 		caseDesc string
 	}{
 		{
@@ -117,7 +117,7 @@ func TestNameExistCheck(t *testing.T) {
 			caseDesc: "name exists",
 			resource: "upstream",
 			name:     "test",
-			mockRet:  []interface{}{"test"},
+			mockRet:  []any{"test"},
 			wantErr:  errors.New("upstream name exists"),
 			wantRet:  &data.SpecCodeResponse{StatusCode: http.StatusBadRequest},
 		},

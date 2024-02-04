@@ -20,7 +20,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type WrapperHandle func(c *gin.Context) (interface{}, error)
+type WrapperHandle func(c *gin.Context) (any, error)
 
 // swagger:model ApiError
 type ApiError struct {

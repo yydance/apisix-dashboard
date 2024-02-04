@@ -82,7 +82,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 		giveInput *ListInput
 		giveErr   error
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			desc: "list all stream route",
@@ -93,7 +93,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 				},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					giveData[0], giveData[1], giveData[2], giveData[3],
 				},
 				TotalSize: 4,
@@ -109,7 +109,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 				},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.StreamRoute{BaseInfo: entity.BaseInfo{CreateTime: 1609376663}, RemoteAddr: "127.0.0.1", ServerAddr: "127.0.0.1", ServerPort: 9090, Upstream: nil, UpstreamID: "u1"},
 				},
 				TotalSize: 1,
@@ -125,7 +125,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 				},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.StreamRoute{BaseInfo: entity.BaseInfo{CreateTime: 1609376663}, RemoteAddr: "127.0.0.1", ServerAddr: "127.0.0.1", ServerPort: 9090, Upstream: nil, UpstreamID: "u1"},
 					&entity.StreamRoute{BaseInfo: entity.BaseInfo{CreateTime: 1609376664}, RemoteAddr: "127.0.0.2", ServerAddr: "127.0.0.1", ServerPort: 9091, Upstream: nil, UpstreamID: "u1"},
 					&entity.StreamRoute{BaseInfo: entity.BaseInfo{CreateTime: 1609376665}, RemoteAddr: "127.0.0.3", ServerAddr: "127.0.0.1", ServerPort: 9092, Upstream: nil, UpstreamID: "u1"},
@@ -144,7 +144,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 				},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.StreamRoute{BaseInfo: entity.BaseInfo{CreateTime: 1609376665}, RemoteAddr: "127.0.0.3", ServerAddr: "127.0.0.1", ServerPort: 9092, Upstream: nil, UpstreamID: "u1"},
 				},
 				TotalSize: 1,
@@ -159,7 +159,7 @@ func TestStreamRouteConditionList(t *testing.T) {
 			mStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range giveData {
 					if input.Predicate(c) {
 						if input.Format == nil {

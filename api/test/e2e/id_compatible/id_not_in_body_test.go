@@ -148,9 +148,9 @@ var _ = DescribeTable("Id Not In Body",
 		Expect(err).To(BeNil())
 		defer resp.Body.Close()
 		respBody, _ := ioutil.ReadAll(resp.Body)
-		list := gjson.Get(string(respBody), "data.rows").Value().([]interface{})
+		list := gjson.Get(string(respBody), "data.rows").Value().([]any)
 		for _, item := range list {
-			route := item.(map[string]interface{})
+			route := item.(map[string]any)
 			base.RunTestCase(base.HttpTestCase{
 				Desc:         "delete the route",
 				Object:       base.ManagerApiExpect(),

@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/xeipuuv/gojsonschema"
 	"go.uber.org/zap/buffer"
@@ -31,14 +31,14 @@ import (
 )
 
 type Validator interface {
-	Validate(obj interface{}) error
+	Validate(obj any) error
 }
 type JsonSchemaValidator struct {
 	schema *gojsonschema.Schema
 }
 
 func NewJsonSchemaValidator(jsonPath string) (Validator, error) {
-	bs, err := ioutil.ReadFile(jsonPath)
+	bs, err := os.ReadFile(jsonPath)
 	if err != nil {
 		return nil, fmt.Errorf("get abs path failed: %s", err)
 	}
@@ -51,7 +51,7 @@ func NewJsonSchemaValidator(jsonPath string) (Validator, error) {
 	}, nil
 }
 
-func (v *JsonSchemaValidator) Validate(obj interface{}) error {
+func (v *JsonSchemaValidator) Validate(obj any) error {
 	ret, err := v.schema.Validate(gojsonschema.NewGoLoader(obj))
 	if err != nil {
 		return fmt.Errorf("validate failed: %s", err)
@@ -93,7 +93,7 @@ func NewAPISIXJsonSchemaValidator(jsonPath string) (Validator, error) {
 	}, nil
 }
 
-func getPlugins(reqBody interface{}) (map[string]interface{}, string) {
+func getPlugins(reqBody any) (map[string]any, string) {
 	switch bodyType := reqBody.(type) {
 	case *entity.Route:
 		log.Infof("type of reqBody: %#v", bodyType)
@@ -207,7 +207,7 @@ func checkRemoteAddr(remoteAddrs []string) error {
 	return nil
 }
 
-func checkConf(reqBody interface{}) error {
+func checkConf(reqBody any) error {
 	switch bodyType := reqBody.(type) {
 	case *entity.Route:
 		route := reqBody.(*entity.Route)
@@ -233,7 +233,7 @@ func checkConf(reqBody interface{}) error {
 	return nil
 }
 
-func (v *APISIXJsonSchemaValidator) Validate(obj interface{}) error {
+func (v *APISIXJsonSchemaValidator) Validate(obj any) error {
 	ret, err := v.schema.Validate(gojsonschema.NewGoLoader(obj))
 	if err != nil {
 		log.Errorf("schema validate failed: %s, s: %v, obj: %v", err, v.schema, obj)
@@ -268,7 +268,7 @@ func (v *APISIXJsonSchemaValidator) Validate(obj interface{}) error {
 			log.Errorf("schema validate failed: schema not found,  %s, %s", "plugins."+pluginName, schemaType)
 			return fmt.Errorf("schema validate failed: schema not found, path: %s", "plugins."+pluginName)
 		}
-		schemaMap := schemaValue.(map[string]interface{})
+		schemaMap := schemaValue.(map[string]any)
 		schemaByte, err := json.Marshal(schemaMap)
 		if err != nil {
 			log.Warnf("schema validate failed: schema json encode failed, path: %s, %w", "plugins."+pluginName, err)
@@ -282,7 +282,7 @@ func (v *APISIXJsonSchemaValidator) Validate(obj interface{}) error {
 		}
 
 		// check property disable, if is bool, remove from json schema checking
-		conf := pluginConf.(map[string]interface{})
+		conf := pluginConf.(map[string]any)
 		var exchange bool
 		disable, ok := conf["disable"]
 		if ok {
@@ -340,7 +340,7 @@ func NewAPISIXSchemaValidator(jsonPath string) (Validator, error) {
 	}, nil
 }
 
-func (v *APISIXSchemaValidator) Validate(obj interface{}) error {
+func (v *APISIXSchemaValidator) Validate(obj any) error {
 	ret, err := v.schema.Validate(gojsonschema.NewBytesLoader(obj.([]byte)))
 	if err != nil {
 		log.Warnf("schema validate failed: %w", err)

@@ -41,6 +41,8 @@ func NewHandler() (handler.RouteRegister, error) {
 func (h *Handler) ApplyRoute(r *gin.Engine) {
 	r.POST("/apisix/admin/user/login", wgin.Wraps(h.userLogin,
 		wrapper.InputType(reflect.TypeOf(LoginInput{}))))
+	r.POST("/apisix/admin/ldap/login", wgin.Wraps(h.userLogin,
+		wrapper.InputType(reflect.TypeOf(LoginInput{}))))
 }
 
 type UserSession struct {
@@ -63,33 +65,37 @@ type LoginInput struct {
 // produces:
 // - application/json
 // parameters:
-// - name: username
-//   in: body
-//   description: user name
-//   required: true
-//   type: string
-// - name: password
-//   in: body
-//   description: password
-//   required: true
-//   type: string
+//   - name: username
+//     in: body
+//     description: user name
+//     required: true
+//     type: string
+//   - name: password
+//     in: body
+//     description: password
+//     required: true
+//     type: string
+//
 // responses:
-//   '0':
-//     description: login success
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-//   default:
-//     description: unexpected error
-//     schema:
-//       "$ref": "#/definitions/ApiError"
-func (h *Handler) userLogin(c droplet.Context) (interface{}, error) {
+//
+//	'0':
+//	  description: login success
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+//	default:
+//	  description: unexpected error
+//	  schema:
+//	    "$ref": "#/definitions/ApiError"
+func (h *Handler) userLogin(c droplet.Context) (any, error) {
 	input := c.Input().(*LoginInput)
 	username := input.Username
 	password := input.Password
 
-	user := conf.UserList[username]
-	if username != user.Username || password != user.Password {
-		return nil, consts.ErrUsernamePassword
+	if !c.Get("isLdap").(bool) {
+		user := conf.UserList[username]
+		if username != user.Username || password != user.Password {
+			return nil, consts.ErrUsernamePassword
+		}
 	}
 
 	// create JWT for session

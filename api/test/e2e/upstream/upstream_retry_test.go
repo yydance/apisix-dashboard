@@ -29,8 +29,8 @@ import (
 // just test for schema check
 var _ = Describe("Upstream keepalive pool", func() {
 	It("create upstream with keepalive pool", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -61,8 +61,8 @@ var _ = Describe("Upstream keepalive pool", func() {
 		})
 	})
 	It("zero retry field", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,
@@ -92,8 +92,8 @@ var _ = Describe("Upstream keepalive pool", func() {
 		})
 	})
 	It("nil retry field", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":   base.UpstreamIp,
 				"port":   1980,

@@ -30,7 +30,7 @@ import (
 	"github.com/apisix/manager-api/internal/utils/consts"
 )
 
-func (o Loader) Import(input interface{}) (*loader.DataSets, error) {
+func (o Loader) Import(input any) (*loader.DataSets, error) {
 	if input == nil {
 		panic("input is nil")
 	}
@@ -125,6 +125,6 @@ func generateBaseRoute(name string, desc string) entity.Route {
 	return entity.Route{
 		Name:    name,
 		Desc:    desc,
-		Plugins: make(map[string]interface{}),
+		Plugins: make(map[string]any),
 	}
 }

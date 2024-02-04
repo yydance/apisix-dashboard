@@ -110,7 +110,7 @@ func fileWriter(logType Type) zapcore.WriteSyncer {
 	return writer
 }
 
-func getZapFields(logger *zap.SugaredLogger, fields []interface{}) *zap.SugaredLogger {
+func getZapFields(logger *zap.SugaredLogger, fields []any) *zap.SugaredLogger {
 	if len(fields) == 0 {
 		return logger
 	}

@@ -36,21 +36,21 @@ import (
 
 type testCase struct {
 	caseDesc     string
-	giveInput    interface{}
-	mockInput    interface{}
-	mockRet      interface{}
-	mockErr      interface{}
-	wantRet      interface{}
-	wantErr      interface{}
+	giveInput    any
+	mockInput    any
+	mockRet      any
+	mockErr      any
+	wantRet      any
+	wantErr      any
 	called       bool
 	serviceInput string
-	scriptRet    interface{}
+	scriptRet    any
 	scriptErr    error
-	serviceRet   interface{}
+	serviceRet   any
 	serviceErr   error
-	upstreamRet  interface{}
+	upstreamRet  any
 	upstreamErr  error
-	nameExistRet []interface{}
+	nameExistRet []any
 }
 
 var DagScript = `
@@ -459,8 +459,8 @@ func TestRoute_List(t *testing.T) {
 				"build":   "16",
 			},
 			Upstream: &entity.UpstreamDef{
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":     "39.97.63.215",
 						"port":     float64(80),
 						"weight":   float64(1),
@@ -513,7 +513,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[0],
 					mockData[1],
 					mockData[2],
@@ -538,7 +538,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[2],
 					mockData[3],
 				},
@@ -561,7 +561,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[1],
 				},
 				TotalSize: 1,
@@ -583,7 +583,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[0],
 					mockData[1],
 				},
@@ -606,7 +606,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					mockData[3],
 				},
 				TotalSize: 1,
@@ -628,7 +628,7 @@ func TestRoute_List(t *testing.T) {
 				PageNumber: 10,
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Route{
 						BaseInfo: entity.BaseInfo{CreateTime: 1609742634},
 						Name:     "r1",
@@ -668,7 +668,7 @@ func TestRoute_List(t *testing.T) {
 				assert.Equal(t, mockInput.PageSize, input.PageSize)
 				assert.Equal(t, mockInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range mockData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -702,7 +702,7 @@ func TestRoute_List(t *testing.T) {
 }
 
 func TestRoute_Create(t *testing.T) {
-	scriptMap := make(map[string]interface{})
+	scriptMap := make(map[string]any)
 
 	err := json.Unmarshal([]byte(DagScript), &scriptMap)
 	assert.Nil(t, err)
@@ -1002,7 +1002,7 @@ func TestRoute_Create(t *testing.T) {
 
 func TestRoute_Update(t *testing.T) {
 	luaScript := "local _M = {} \n function _M.access(api_ctx) \n ngx.log(ngx.WARN,\"hit access phase\") \n end \nreturn _M"
-	scriptMap := make(map[string]interface{})
+	scriptMap := make(map[string]any)
 	err := json.Unmarshal([]byte(DagScript), &scriptMap)
 	assert.Nil(t, err)
 
@@ -1269,8 +1269,8 @@ func TestRoute_Patch(t *testing.T) {
 		Labels: map[string]string{
 			"version": "v1",
 		},
-		Plugins: map[string]interface{}{
-			"limit-count": map[string]interface{}{
+		Plugins: map[string]any{
+			"limit-count": map[string]any{
 				"count":         2,
 				"time_window":   60,
 				"rejected_code": 503,
@@ -1303,8 +1303,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1328,8 +1328,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1353,8 +1353,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1387,8 +1387,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1412,8 +1412,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1437,8 +1437,8 @@ func TestRoute_Patch(t *testing.T) {
 				Labels: map[string]string{
 					"version": "v1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -1570,8 +1570,8 @@ func TestRoute_Exist(t *testing.T) {
 				"build":   "16",
 			},
 			Upstream: &entity.UpstreamDef{
-				Nodes: []interface{}{
-					map[string]interface{}{
+				Nodes: []any{
+					map[string]any{
 						"host":   "39.97.63.215",
 						"port":   float64(80),
 						"weight": float64(1),
@@ -1638,7 +1638,7 @@ func TestRoute_Exist(t *testing.T) {
 			routeStore.On("List", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range mockData {
 					if input.Predicate(c) {
 						if input.Format != nil {

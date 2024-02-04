@@ -93,7 +93,7 @@ func GetFlakeUidStr() string {
 	return strconv.FormatUint(GetFlakeUid(), 10)
 }
 
-func InterfaceToString(val interface{}) string {
+func InterfaceToString(val any) string {
 	if val == nil {
 		return ""
 	}
@@ -102,7 +102,7 @@ func InterfaceToString(val interface{}) string {
 }
 
 // Note: json.Marshal and json.Unmarshal may cause the precision loss
-func ObjectClone(origin, copy interface{}) error {
+func ObjectClone(origin, copy any) error {
 	byt, err := json.Marshal(origin)
 	if err != nil {
 		return err
@@ -188,7 +188,6 @@ func StringSliceContains(a, b []string) bool {
 	return false
 }
 
-//
 func StringSliceEqual(a, b []string) bool {
 	if (a == nil) != (b == nil) {
 		return false
@@ -211,7 +210,7 @@ func StringSliceEqual(a, b []string) bool {
 }
 
 // value compare
-func ValueEqual(a interface{}, b interface{}) bool {
+func ValueEqual(a any, b any) bool {
 	aBytes, err := json.Marshal(a)
 	if err != nil {
 		return false

@@ -45,7 +45,7 @@ func Authentication() gin.HandlerFunc {
 		if cookie.IsNew {
 			tokenStr := c.GetHeader("Authorization")
 			// verify token
-			token, err := jwt.ParseWithClaims(tokenStr, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.ParseWithClaims(tokenStr, &jwt.StandardClaims{}, func(token *jwt.Token) (any, error) {
 				return []byte(conf.AuthConf.Secret), nil
 			})
 

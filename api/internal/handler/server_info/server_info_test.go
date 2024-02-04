@@ -36,10 +36,10 @@ func TestHandler_Get(t *testing.T) {
 			caseDesc   string
 			giveInput  *GetInput
 			giveErr    error
-			giveRet    interface{}
+			giveRet    any
 			wantErr    error
 			wantGetKey string
-			wantRet    interface{}
+			wantRet    any
 		}{
 			{
 				caseDesc:  "get server_info",
@@ -99,16 +99,16 @@ func TestHandler_List(t *testing.T) {
 		tests = []struct {
 			caseDesc   string
 			giveInput  *ListInput
-			giveData   []interface{}
+			giveData   []any
 			giveErr    error
 			wantErr    error
 			wantGetKey *ListInput
-			wantRet    interface{}
+			wantRet    any
 		}{
 			{
 				caseDesc:  "list server_info",
 				giveInput: &ListInput{Hostname: ""},
-				giveData: []interface{}{
+				giveData: []any{
 					&entity.ServerInfo{
 						BaseInfo:       entity.BaseInfo{ID: "server_1"},
 						UpTime:         10,
@@ -127,7 +127,7 @@ func TestHandler_List(t *testing.T) {
 					},
 				},
 				wantRet: &store.ListOutput{
-					Rows: []interface{}{
+					Rows: []any{
 						&entity.ServerInfo{
 							BaseInfo:       entity.BaseInfo{ID: "server_1"},
 							UpTime:         10,
@@ -151,7 +151,7 @@ func TestHandler_List(t *testing.T) {
 			{
 				caseDesc:  "list server_info with hostname",
 				giveInput: &ListInput{Hostname: "ubuntu"},
-				giveData: []interface{}{
+				giveData: []any{
 					&entity.ServerInfo{
 						BaseInfo:       entity.BaseInfo{ID: "server_1"},
 						UpTime:         10,
@@ -170,7 +170,7 @@ func TestHandler_List(t *testing.T) {
 					},
 				},
 				wantRet: &store.ListOutput{
-					Rows: []interface{}{
+					Rows: []any{
 						&entity.ServerInfo{
 							BaseInfo:       entity.BaseInfo{ID: "server_2"},
 							UpTime:         10,
@@ -193,7 +193,7 @@ func TestHandler_List(t *testing.T) {
 			mStore.On("List", mock.Anything).Run(func(args mock.Arguments) {
 				getCalled = true
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var res []interface{}
+				var res []any
 				for _, c := range tc.giveData {
 					if input.Predicate(c) {
 						if input.Format != nil {

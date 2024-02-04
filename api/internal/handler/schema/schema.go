@@ -50,7 +50,7 @@ type SchemaInput struct {
 	Resource string `auto_read:"resource,path" validate:"required"`
 }
 
-func (h *SchemaHandler) Schema(c droplet.Context) (interface{}, error) {
+func (h *SchemaHandler) Schema(c droplet.Context) (any, error) {
 	input := c.Input().(*SchemaInput)
 
 	ret := conf.Schema.Get("main." + input.Resource).Value()
@@ -68,10 +68,10 @@ type PluginSchemaInput struct {
 	SchemaType string `auto_read:"schema_type,query"`
 }
 
-func (h *SchemaHandler) PluginSchema(c droplet.Context) (interface{}, error) {
+func (h *SchemaHandler) PluginSchema(c droplet.Context) (any, error) {
 	input := c.Input().(*PluginSchemaInput)
 
-	var ret interface{}
+	var ret any
 	if input.SchemaType == "consumer" {
 		ret = conf.Schema.Get("plugins." + input.Name + ".consumer_schema").Value()
 	}

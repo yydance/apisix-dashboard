@@ -48,7 +48,7 @@ func newDataSet() *DataSet {
 	}
 }
 
-func (a *DataSet) rangeData(key store.HubKey, f func(int, interface{}) bool) {
+func (a *DataSet) rangeData(key store.HubKey, f func(int, any) bool) {
 	switch key {
 	case store.HubKeyConsumer:
 		for i, v := range a.Consumers {
@@ -101,7 +101,7 @@ func (a *DataSet) rangeData(key store.HubKey, f func(int, interface{}) bool) {
 	}
 }
 
-func (a *DataSet) Add(obj interface{}) error {
+func (a *DataSet) Add(obj any) error {
 	var err error = nil
 	switch obj := obj.(type) {
 	case *entity.Consumer:

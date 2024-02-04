@@ -32,8 +32,8 @@ import (
 
 type testCase struct {
 	giveInput *ListInput
-	giveData  []interface{}
-	wantRet   interface{}
+	giveData  []any
+	wantRet   any
 }
 
 func TestPair_MarshalJSON(t *testing.T) {
@@ -72,14 +72,14 @@ func TestPair_MarshalJSON(t *testing.T) {
 	assert.Equal(t, mp["test_key"], "test_val\"")
 }
 
-func genMockStore(t *testing.T, giveData []interface{}) *store.MockInterface {
+func genMockStore(t *testing.T, giveData []any) *store.MockInterface {
 	mStore := &store.MockInterface{}
 	mStore.On("List", mock.Anything).Run(func(args mock.Arguments) {
 		input := args.Get(0).(store.ListInput)
 		assert.Equal(t, 0, input.PageSize)
 		assert.Equal(t, 0, input.PageNumber)
 	}).Return(func(input store.ListInput) *store.ListOutput {
-		var returnData []interface{}
+		var returnData []any
 		for _, c := range giveData {
 			if input.Predicate(c) {
 				returnData = append(returnData, input.Format(c))
@@ -94,7 +94,7 @@ func genMockStore(t *testing.T, giveData []interface{}) *store.MockInterface {
 	return mStore
 }
 
-func newCase(giveData []interface{}, ret []interface{}) *testCase {
+func newCase(giveData []any, ret []any) *testCase {
 	t := testCase{}
 	t.giveInput = &ListInput{
 		Pagination: store.Pagination{
@@ -199,36 +199,36 @@ func TestLabel(t *testing.T) {
 	// TODO: Test SSL after the ssl config bug fixed
 	types := []string{"route", "service", "upstream", "consumer", "plugin_config"}
 
-	var giveData []interface{}
+	var giveData []any
 	for _, typ := range types {
 		switch typ {
 		case "route":
-			giveData = []interface{}{
+			giveData = []any{
 				genRoute(m1),
 				genRoute(m2),
 			}
 		case "service":
-			giveData = []interface{}{
+			giveData = []any{
 				genService(m1),
 				genService(m2),
 			}
 		case "ssl":
-			giveData = []interface{}{
+			giveData = []any{
 				genSSL(m1),
 				genSSL(m2),
 			}
 		case "upstream":
-			giveData = []interface{}{
+			giveData = []any{
 				genUpstream(m1),
 				genUpstream(m2),
 			}
 		case "consumer":
-			giveData = []interface{}{
+			giveData = []any{
 				genConsumer(m1),
 				genConsumer(m2),
 			}
 		case "plugin_config":
-			giveData = []interface{}{
+			giveData = []any{
 				genPluginConfig(m1),
 				genPluginConfig(m2),
 			}
@@ -236,7 +236,7 @@ func TestLabel(t *testing.T) {
 
 		var testCases []*testCase
 
-		expect := []interface{}{
+		expect := []any{
 			Pair{"label1", "value1"},
 			Pair{"label1", "value2"},
 			Pair{"label2", "value2"},
@@ -245,7 +245,7 @@ func TestLabel(t *testing.T) {
 		tc.giveInput.Type = typ
 		testCases = append(testCases, tc)
 
-		expect = []interface{}{
+		expect = []any{
 			Pair{"label1", "value1"},
 			Pair{"label1", "value2"},
 		}
@@ -254,7 +254,7 @@ func TestLabel(t *testing.T) {
 		tc.giveInput.Label = "label1"
 		testCases = append(testCases, tc)
 
-		expect = []interface{}{
+		expect = []any{
 			Pair{"label1", "value2"},
 		}
 		tc = newCase(giveData, expect)
@@ -262,7 +262,7 @@ func TestLabel(t *testing.T) {
 		tc.giveInput.Label = "label1:value2"
 		testCases = append(testCases, tc)
 
-		expect = []interface{}{
+		expect = []any{
 			Pair{"label1", "value1"},
 			Pair{"label1", "value2"},
 		}
@@ -311,17 +311,17 @@ func TestLabel(t *testing.T) {
 	}
 
 	handler := Handler{
-		routeStore:        genMockStore(t, []interface{}{genRoute(m1)}),
-		sslStore:          genMockStore(t, []interface{}{genSSL(m2)}),
-		upstreamStore:     genMockStore(t, []interface{}{genUpstream(m3)}),
-		consumerStore:     genMockStore(t, []interface{}{genConsumer(m4)}),
-		serviceStore:      genMockStore(t, []interface{}{genService(m5)}),
-		pluginConfigStore: genMockStore(t, []interface{}{genPluginConfig(m5)}),
+		routeStore:        genMockStore(t, []any{genRoute(m1)}),
+		sslStore:          genMockStore(t, []any{genSSL(m2)}),
+		upstreamStore:     genMockStore(t, []any{genUpstream(m3)}),
+		consumerStore:     genMockStore(t, []any{genConsumer(m4)}),
+		serviceStore:      genMockStore(t, []any{genService(m5)}),
+		pluginConfigStore: genMockStore(t, []any{genPluginConfig(m5)}),
 	}
 
 	var testCases []*testCase
 
-	expect := []interface{}{
+	expect := []any{
 		Pair{"label1", "value1"},
 		Pair{"label1", "value2"},
 		Pair{"label2", "value2"},
@@ -333,7 +333,7 @@ func TestLabel(t *testing.T) {
 	tc.giveInput.Type = "all"
 	testCases = append(testCases, tc)
 
-	expect = []interface{}{
+	expect = []any{
 		Pair{"label1", "value1"},
 		Pair{"label1", "value2"},
 	}
@@ -342,7 +342,7 @@ func TestLabel(t *testing.T) {
 	tc.giveInput.Label = "label1"
 	testCases = append(testCases, tc)
 
-	expect = []interface{}{
+	expect = []any{
 		Pair{"label1", "value2"},
 	}
 	tc = newCase(nil, expect)
@@ -350,7 +350,7 @@ func TestLabel(t *testing.T) {
 	tc.giveInput.Label = "label1:value2"
 	testCases = append(testCases, tc)
 
-	expect = []interface{}{
+	expect = []any{
 		Pair{"label1", "value1"},
 		Pair{"label1", "value2"},
 		Pair{"label5", "value5"},
@@ -359,7 +359,7 @@ func TestLabel(t *testing.T) {
 	tc.giveInput.Type = "all"
 	tc.giveInput.Label = "label1,label5:value5"
 
-	expect = []interface{}{
+	expect = []any{
 		Pair{"label1", "value1"},
 		Pair{"label1", "value2"},
 	}

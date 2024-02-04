@@ -41,7 +41,7 @@ func TestPluginConfig_Get(t *testing.T) {
 		giveErr    error
 		wantErr    error
 		wantGetKey string
-		wantRet    interface{}
+		wantRet    any
 	}{
 		{
 			caseDesc:   "normal",
@@ -51,8 +51,8 @@ func TestPluginConfig_Get(t *testing.T) {
 				BaseInfo: entity.BaseInfo{
 					ID: "1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         2,
 						"time_window":   60,
 						"rejected_code": 503,
@@ -64,8 +64,8 @@ func TestPluginConfig_Get(t *testing.T) {
 				BaseInfo: entity.BaseInfo{
 					ID: "1",
 				},
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         2,
 						"time_window":   60,
 						"rejected_code": 503,
@@ -114,7 +114,7 @@ func TestPluginConfig_List(t *testing.T) {
 		giveErr   error
 		wantErr   error
 		wantInput store.ListInput
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "list all plugin config",
@@ -135,7 +135,7 @@ func TestPluginConfig_List(t *testing.T) {
 				{Desc: "plugin_config_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.PluginConfig{Desc: "1"},
 					&entity.PluginConfig{Desc: "s2"},
 					&entity.PluginConfig{Desc: "test_plugin_config"},
@@ -164,7 +164,7 @@ func TestPluginConfig_List(t *testing.T) {
 				{BaseInfo: entity.BaseInfo{CreateTime: 1609376664}, Desc: "plugin_config_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.PluginConfig{BaseInfo: entity.BaseInfo{CreateTime: 1609376663}, Desc: "test_plugin_config"},
 					&entity.PluginConfig{BaseInfo: entity.BaseInfo{CreateTime: 1609376664}, Desc: "plugin_config_test"},
 				},
@@ -197,7 +197,7 @@ func TestPluginConfig_List(t *testing.T) {
 				{Desc: "plugin_config_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.PluginConfig{
 						Desc: "1",
 						Labels: map[string]string{
@@ -235,7 +235,7 @@ func TestPluginConfig_List(t *testing.T) {
 				{Desc: "plugin_config_test"},
 			},
 			wantRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.PluginConfig{
 						Desc: "1",
 						Labels: map[string]string{
@@ -259,7 +259,7 @@ func TestPluginConfig_List(t *testing.T) {
 				assert.Equal(t, tc.wantInput.PageSize, input.PageSize)
 				assert.Equal(t, tc.wantInput.PageNumber, input.PageNumber)
 			}).Return(func(input store.ListInput) *store.ListOutput {
-				var returnData []interface{}
+				var returnData []any
 				for _, c := range tc.giveData {
 					if input.Predicate(c) {
 						if input.Format == nil {
@@ -292,11 +292,11 @@ func TestPluginConfig_Create(t *testing.T) {
 		caseDesc  string
 		getCalled bool
 		giveInput *entity.PluginConfig
-		giveRet   interface{}
+		giveRet   any
 		giveErr   error
 		wantInput *entity.PluginConfig
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc:  "create success",
@@ -350,10 +350,10 @@ func TestPluginConfig_Update(t *testing.T) {
 		getCalled bool
 		giveInput *UpdateInput
 		giveErr   error
-		giveRet   interface{}
+		giveRet   any
 		wantInput *entity.PluginConfig
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc:  "create success",
@@ -434,8 +434,8 @@ func TestPluginConfig_Patch(t *testing.T) {
 			CreateTime: 1609340491,
 			UpdateTime: 1609340491,
 		},
-		Plugins: map[string]interface{}{
-			"limit-count": map[string]interface{}{
+		Plugins: map[string]any{
+			"limit-count": map[string]any{
 				"count":         2,
 				"time_window":   60,
 				"rejected_code": 503,
@@ -452,10 +452,10 @@ func TestPluginConfig_Patch(t *testing.T) {
 		caseDesc          string
 		giveInput         *PatchInput
 		giveErr           error
-		giveRet           interface{}
+		giveRet           any
 		wantInput         *entity.PluginConfig
 		wantErr           error
-		wantRet           interface{}
+		wantRet           any
 		pluginConfigInput string
 		pluginConfigRet   *entity.PluginConfig
 		pluginConfigErr   error
@@ -492,14 +492,14 @@ func TestPluginConfig_Patch(t *testing.T) {
 					UpdateTime: 1609340491,
 				},
 				Desc: "patched",
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(504),
 						"key":           "remote_addr",
 					},
-					"key-auth": map[string]interface{}{
+					"key-auth": map[string]any{
 						"key": "auth-one",
 					},
 				},
@@ -528,8 +528,8 @@ func TestPluginConfig_Patch(t *testing.T) {
 					UpdateTime: 1609340491,
 				},
 				Desc: "patched",
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -558,8 +558,8 @@ func TestPluginConfig_Patch(t *testing.T) {
 					UpdateTime: 1609340491,
 				},
 				Desc: "desc_patched",
-				Plugins: map[string]interface{}{
-					"limit-count": map[string]interface{}{
+				Plugins: map[string]any{
+					"limit-count": map[string]any{
 						"count":         float64(2),
 						"time_window":   float64(60),
 						"rejected_code": float64(503),
@@ -624,7 +624,7 @@ func TestPluginConfigs_Delete(t *testing.T) {
 		listRet   *store.ListOutput
 		wantInput []string
 		wantErr   error
-		wantRet   interface{}
+		wantRet   any
 	}{
 		{
 			caseDesc: "delete success",
@@ -632,7 +632,7 @@ func TestPluginConfigs_Delete(t *testing.T) {
 				IDs: "1",
 			},
 			listRet: &store.ListOutput{
-				Rows:      []interface{}{},
+				Rows:      []any{},
 				TotalSize: 0,
 			},
 			wantInput: []string{"1"},
@@ -643,7 +643,7 @@ func TestPluginConfigs_Delete(t *testing.T) {
 				IDs: "1,s2",
 			},
 			listRet: &store.ListOutput{
-				Rows:      []interface{}{},
+				Rows:      []any{},
 				TotalSize: 0,
 			},
 			wantInput: []string{"1", "s2"},
@@ -660,7 +660,7 @@ func TestPluginConfigs_Delete(t *testing.T) {
 				"002",
 			},
 			listRet: &store.ListOutput{
-				Rows: []interface{}{
+				Rows: []any{
 					&entity.Route{BaseInfo: entity.BaseInfo{ID: "a"}},
 					&entity.Route{BaseInfo: entity.BaseInfo{ID: "b"}},
 				},
@@ -678,7 +678,7 @@ func TestPluginConfigs_Delete(t *testing.T) {
 				IDs: "1",
 			},
 			listRet: &store.ListOutput{
-				Rows:      []interface{}{},
+				Rows:      []any{},
 				TotalSize: 0,
 			},
 			giveErr:   fmt.Errorf("delete error"),

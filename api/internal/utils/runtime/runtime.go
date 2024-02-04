@@ -27,9 +27,9 @@ var (
 	ActuallyPanic = true
 )
 
-var PanicHandlers = []func(interface{}){logPanic}
+var PanicHandlers = []func(any){logPanic}
 
-func HandlePanic(additionalHandlers ...func(interface{})) {
+func HandlePanic(additionalHandlers ...func(any)) {
 	if err := recover(); err != nil {
 		for _, fn := range PanicHandlers {
 			fn(err)
@@ -43,7 +43,7 @@ func HandlePanic(additionalHandlers ...func(interface{})) {
 	}
 }
 
-func logPanic(r interface{}) {
+func logPanic(r any) {
 	if r == http.ErrAbortHandler {
 		return
 	}

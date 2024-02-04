@@ -30,8 +30,8 @@ import (
 // just test for schema check
 var _ = Describe("Upstream priority", func() {
 	It("create upstream with priority", func() {
-		createUpstreamBody := make(map[string]interface{})
-		createUpstreamBody["nodes"] = []map[string]interface{}{
+		createUpstreamBody := make(map[string]any)
+		createUpstreamBody["nodes"] = []map[string]any{
 			{
 				"host":     base.UpstreamIp,
 				"port":     1980,

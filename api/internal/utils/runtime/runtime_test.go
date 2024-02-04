@@ -33,9 +33,9 @@ func TestHandleCrash(t *testing.T) {
 func TestCustomHandleCrash(t *testing.T) {
 	old := PanicHandlers
 	defer func() { PanicHandlers = old }()
-	var result interface{}
-	PanicHandlers = []func(interface{}){
-		func(r interface{}) {
+	var result any
+	PanicHandlers = []func(any){
+		func(r any) {
 			result = r
 		},
 	}

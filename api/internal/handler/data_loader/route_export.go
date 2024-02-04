@@ -65,8 +65,8 @@ type ExportInput struct {
 	IDs string `auto_read:"ids,path"`
 }
 
-//ExportRoutes Export data by passing route ID, such as "R1" or multiple route parameters, such as "R1,R2"
-func (h *Handler) ExportRoutes(c droplet.Context) (interface{}, error) {
+// ExportRoutes Export data by passing route ID, such as "R1" or multiple route parameters, such as "R1,R2"
+func (h *Handler) ExportRoutes(c droplet.Context) (any, error) {
 	input := c.Input().(*ExportInput)
 
 	if input.IDs == "" {
@@ -105,14 +105,14 @@ const (
 var (
 	openApi         = "3.0.0"
 	title           = "RoutesExport"
-	service         interface{}
+	service         any
 	err             error
 	routeMethods    []string
 	_allHTTPMethods = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch, http.MethodHead, http.MethodConnect, http.MethodTrace, http.MethodOptions}
 )
 
-//ExportAllRoutes All routes can be directly exported without passing parameters
-func (h *Handler) ExportAllRoutes(c droplet.Context) (interface{}, error) {
+// ExportAllRoutes All routes can be directly exported without passing parameters
+func (h *Handler) ExportAllRoutes(c droplet.Context) (any, error) {
 	routelist, err := h.routeStore.List(c.Context(), store.ListInput{})
 
 	if err != nil {
@@ -136,7 +136,7 @@ func (h *Handler) ExportAllRoutes(c droplet.Context) (interface{}, error) {
 	return swagger, nil
 }
 
-//RouteToOpenAPI3 Pass in route list parameter: []*entity.Route, convert route data to openapi3 and export processing function
+// RouteToOpenAPI3 Pass in route list parameter: []*entity.Route, convert route data to openapi3 and export processing function
 func (h *Handler) RouteToOpenAPI3(c droplet.Context, routes []*entity.Route) (*openapi3.Swagger, error) {
 	paths := openapi3.Paths{}
 	paramsRefs := []*openapi3.ParameterRef{}
@@ -146,9 +146,9 @@ func (h *Handler) RouteToOpenAPI3(c droplet.Context, routes []*entity.Route) (*o
 	_pathNumber := GetPathNumber()
 
 	for _, route := range routes {
-		extensions := make(map[string]interface{})
-		servicePlugins := make(map[string]interface{})
-		plugins := make(map[string]interface{})
+		extensions := make(map[string]any)
+		servicePlugins := make(map[string]any)
+		plugins := make(map[string]any)
 		serviceLabels := make(map[string]string)
 
 		pathItem := &openapi3.PathItem{}
@@ -291,8 +291,8 @@ func (h *Handler) RouteToOpenAPI3(c droplet.Context, routes []*entity.Route) (*o
 	return &swagger, nil
 }
 
-//ParseLabels When service and route have labels at the same time, use route's label.
-//When route has no label, service sometimes uses service's label. This function is used to process this logic
+// ParseLabels When service and route have labels at the same time, use route's label.
+// When route has no label, service sometimes uses service's label. This function is used to process this logic
 func ParseLabels(route *entity.Route, serviceLabels map[string]string) (map[string]string, error) {
 	if route.Labels != nil {
 		return route.Labels, nil
@@ -302,7 +302,7 @@ func ParseLabels(route *entity.Route, serviceLabels map[string]string) (map[stri
 	return nil, nil
 }
 
-//ParsePathItem Convert data in route to openapi3
+// ParsePathItem Convert data in route to openapi3
 func ParsePathItem(path openapi3.Operation, routeMethod string) *openapi3.Operation {
 	_path := &openapi3.Operation{
 		ExtensionProps: path.ExtensionProps,
@@ -323,7 +323,7 @@ func ParsePathItem(path openapi3.Operation, routeMethod string) *openapi3.Operat
 }
 
 // ParseRoutePlugins Merge service with plugin in route
-func ParseRoutePlugins(route *entity.Route, paramsRefs []*openapi3.ParameterRef, plugins map[string]interface{}, path openapi3.Operation, servicePlugins map[string]interface{}, secSchemas openapi3.SecuritySchemes, requestBody *openapi3.RequestBody) (openapi3.Operation, openapi3.SecuritySchemes, []*openapi3.ParameterRef, map[string]interface{}, error) {
+func ParseRoutePlugins(route *entity.Route, paramsRefs []*openapi3.ParameterRef, plugins map[string]any, path openapi3.Operation, servicePlugins map[string]any, secSchemas openapi3.SecuritySchemes, requestBody *openapi3.RequestBody) (openapi3.Operation, openapi3.SecuritySchemes, []*openapi3.ParameterRef, map[string]any, error) {
 	if route.Plugins != nil {
 		param := &openapi3.Parameter{}
 		secReq := &openapi3.SecurityRequirements{}
@@ -332,7 +332,7 @@ func ParseRoutePlugins(route *entity.Route, paramsRefs []*openapi3.ParameterRef,
 		for key, value := range route.Plugins {
 			// analysis request-validation plugin
 			if key == "request-validation" {
-				if valueMap, ok := value.(map[string]interface{}); ok {
+				if valueMap, ok := value.(map[string]any); ok {
 					if hsVal, ok := valueMap["header_schema"]; ok {
 						param.In = "header"
 						requestValidation := &entity.RequestValidation{}
@@ -341,14 +341,14 @@ func ParseRoutePlugins(route *entity.Route, paramsRefs []*openapi3.ParameterRef,
 						if err != nil {
 							log.Errorf("json marshal failed: %s", err)
 						}
-						for key1, value1 := range requestValidation.Properties.(map[string]interface{}) {
+						for key1, value1 := range requestValidation.Properties.(map[string]any) {
 							for _, arr := range requestValidation.Required {
 								if arr == key1 {
 									param.Required = true
 								}
 							}
 							param.Name = key1
-							typeStr := value1.(map[string]interface{})
+							typeStr := value1.(map[string]any)
 							schema := &openapi3.Schema{Type: typeStr["type"].(string)}
 							param.Schema = &openapi3.SchemaRef{Value: schema}
 							paramsRefs = append(paramsRefs, &openapi3.ParameterRef{Value: param})
@@ -466,7 +466,7 @@ func ParseRouteUris(route *entity.Route, paths openapi3.Paths, paramsRefs []*ope
 }
 
 // ParseRouteUpstream Processing the upstream in service and route
-func (h *Handler) ParseRouteUpstream(c droplet.Context, route *entity.Route) (interface{}, error) {
+func (h *Handler) ParseRouteUpstream(c droplet.Context, route *entity.Route) (any, error) {
 	// The upstream data of route has the highest priority.
 	// If there is one, it will be used directly.
 	// If there is no route, the upstream data of service will be used.
