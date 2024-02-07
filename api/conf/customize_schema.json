@@ -28,6 +28,90 @@
                 "payload"
             ],
             "type":"object"
+        },
+        "users": {
+            "properties":{
+                "id": {
+					"anyOf": [
+						{
+							"maxLength": 64,
+							"minLength": 1,
+							"pattern": "^[a-zA-Z0-9-_.]+$",
+							"type": "string"
+						},
+						{
+							"minimum": 1,
+							"type": "integer"
+						}
+					]
+				},
+                "name": {
+					"maxLength": 100,
+					"minLength": 1,
+					"type": "string"
+				},
+                "status": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "oneOf": [
+                        {
+                            "required": [
+                                "local"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "ldap"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "oidc"
+                            ]
+                        }
+                    ],
+                    "type": "string"
+                },
+                "teams_id": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "maxLength": 64,
+                                "minLength": 1,
+                                "pattern": "^[a-zA-Z0-9-_.]+$",
+                                "type": "string"
+                            },
+                            {
+                                "minimum": 1,
+                                "type": "integer"
+                            }
+                        ]
+                    }
+                },
+                "role_id": {
+                    "anyOf": [
+						{
+							"maxLength": 64,
+							"minLength": 1,
+							"pattern": "^[a-zA-Z0-9-_.]+$",
+							"type": "string"
+						},
+						{
+							"minimum": 1,
+							"type": "integer"
+						}
+					]
+                },
+                "create_time": {
+					"type": "integer"
+				},
+                "update_time": {
+                    "type":"integer"
+                }
+            },
+           "type": "object"
         }
    }
 }

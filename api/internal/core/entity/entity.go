@@ -316,14 +316,23 @@ type SystemConfig struct {
 
 type User struct {
 	BaseInfo
-	Name   string `json:"user_name"`
-	Status bool   `json:"status"`
-	Type   string `json:"type"`
-	TeamID any    `json:"team_id"`
-	RoleID any    `json:"role_id"`
+	Name    string `json:"name,omitempty"`
+	Status  bool   `json:"status" default:"true"`
+	Type    string `json:"type,omitempty"`
+	TeamsID []any  `json:"teams_id,omitempty"`
+	RoleID  []any  `json:"role_id,omitempty"`
 }
 
 type Team struct {
 	BaseInfo
-	Name string `json:"team_name"`
+	Name      string   `json:"name,omitempty"`
+	UsersID   []any    `json:"users_id,omitempty"`
+	TeamAdmin []string `json:"team_admin,omitempty"`
+}
+
+type Role struct {
+	BaseInfo
+	Name          string   `json:"name,omitempty"`
+	Authorization string   `json:"authorization,omitempty"`
+	Features      []string `json:"features,omitempty"`
 }

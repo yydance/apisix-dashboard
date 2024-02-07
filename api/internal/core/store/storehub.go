@@ -274,5 +274,17 @@ func InitStores() error {
 		return err
 	}
 
+	err = InitStore(HubKeyRole, GenericStoreOption{
+		BasePath: conf.ETCDConfig.Prefix + "/roles",
+		ObjType:  reflect.TypeOf(entity.Role{}),
+		KeyFunc: func(obj any) string {
+			r := obj.(*entity.Role)
+			return utils.InterfaceToString(r.ID)
+		},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

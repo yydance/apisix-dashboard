@@ -22,7 +22,7 @@ func Init() {
 	}
 	err = l.Bind(conf.LdapConfig.BindDN, conf.LdapConfig.BindPassword)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error("ldap bind failed, user or password is wrong")
 	}
 }
 
